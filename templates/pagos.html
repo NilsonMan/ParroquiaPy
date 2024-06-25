@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gestión de Pagos{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Gestión de Pagos</h1>
+        {% if 'username' in session %}
+        <nav>
+            <ul class="navbar">
+                <li><a href="{{ url_for('menu') }}">Inicio</a></li>
+                <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+        {% endif %}
+    </header>
+   
+    <main>
+        <h2>Editar Pagos</h2>
+        <form method="post">
+            <label for="cripta">Cripta:</label>
+            <input type="text" id="cripta" name="cripta" required>
+            <br>
+            <label for="saldo">Saldo:</label>
+            <input type="number" id="saldo" name="saldo" required disabled>
+            <br>
+            <label for="abono">Abono:</label>
+            <input type="number" id="abono" name="abono" required>
+            <br>
+            <label for="notas">Notas:</label>
+            <textarea id="notas" name="notas"></textarea>
+            <br>
+            <button type="submit">Guardar</button>
+        </form>
+        <br>
+        <table>
+            <tr>
+                <th>Folio</th>
+                <th>Cripta</th>
+                <th>Saldo</th>
+                <th>Abono</th>
+                <th>Saldo Total</th>
+                <th>Fecha Pago</th>
+                <th>Notas</th>
+            </tr>
+            {% for pago in pagos %}
+            <tr>
+                <td>{{ pago['Folio'] }}</td>
+                <td>{{ pago['Cripta'] }}</td>
+                <td>{{ pago['Saldo'] }}</td>
+                <td>{{ pago['Abono'] }}</td>
+                <td>{{ pago['Saldo_total'] }}</td>
+                <td>{{ pago['Fecha_pago'] }}</td>
+                <td>{{ pago['Notas'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>    
+    </main>
+</body>
+</html>

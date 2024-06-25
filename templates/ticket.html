@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket de Pago</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .ticket {
+            width: 300px;
+            margin: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .titulo {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .detalle {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket">
+        <div class="titulo">Ticket de Pago</div>
+        <div class="detalle"><strong>Folio:</strong> {{ folio }}</div>
+        <div class="detalle"><strong>Cripta:</strong> {{ cripta }}</div>
+        <div class="detalle"><strong>Abono:</strong> ${{ abono }}</div>
+        <div class="detalle"><strong>Fecha:</strong> {{ fecha }}</div>
+        <div class="detalle"><strong>Notas:</strong> {{ notas }}</div>
+    </div>
+</body>
+</html>

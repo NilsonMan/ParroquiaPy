@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Resultados de Búsqueda{% endblock %}
+
+{% block content %}
+<div class="results-container">
+    <h1>Resultados de Búsqueda para "{{ query }}"</h1>
+
+    {% if not clientes and not difuntos %}
+        <p>No se encontraron resultados.</p>
+    {% else %}
+        {% if clientes %}
+        <h2>Clientes Encontrados</h2>
+        <table>
+            <tr>
+                <th>Cripta</th>
+                <th>Nombre Titular</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Nombre Beneficiario</th>
+                <th>Apellido Paterno Beneficiario</th>
+                <th>Apellido Materno Beneficiario</th>
+                <th>Teléfono Beneficiario</th>
+                <th>Dirección Beneficiario</th>
+                <th>Nombre Beneficiario 2</th>
+                <th>Apellido Paterno Beneficiario 2</th>
+                <th>Apellido Materno Beneficiario 2</th>
+                <th>Teléfono Beneficiario 2</th>
+                <th>Dirección Beneficiario 2</th>
+            </tr>
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente['Cripta'] }}</td>
+                <td>{{ cliente['Nombre_titular'] }}</td>
+                <td>{{ cliente['Apellido_paterno'] }}</td>
+                <td>{{ cliente['Apellido_materno'] }}</td>
+                <td>{{ cliente['Telefono1'] }}</td>
+                <td>{{ cliente['Direccion1'] }}</td>
+                <td>{{ cliente['Nombre_Beneficiario'] }}</td>
+                <td>{{ cliente['Apellido_paterno_Beneficiario'] }}</td>
+                <td>{{ cliente['Apellido_materno_Beneficiario'] }}</td>
+                <td>{{ cliente['Telefono_Beneficiario'] }}</td>
+                <td>{{ cliente['Direccion_Beneficiario'] }}</td>
+                <td>{{ cliente['Nombre_Beneficiario2'] }}</td>
+                <td>{{ cliente['Apellido_paterno_Beneficiario2'] }}</td>
+                <td>{{ cliente['Apellido_materno_Beneficiario2'] }}</td>
+                <td>{{ cliente['Telefono_Beneficiario2'] }}</td>
+                <td>{{ cliente['Direccion_Beneficiario2'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+        {% if documentos %}
+        <h2>Documentación Asociada</h2>
+        <table>
+            <tr>
+                <th>Cripta</th>
+                <th>Tipo de Documento</th>
+                <th>Observaciones</th>
+                <th>Documento</th>
+            </tr>
+            {% for documento in documentos %}
+            <tr>
+                <td>{{ documento['Cripta'] }}</td>
+                <td>{{ documento['Tipo_documento'] }}</td>
+                <td>{{ documento['Observaciones'] }}</td>
+                <td>
+                    {% if documento['Documento'] %}
+                    <a href="{{ url_for('static', filename='uploads/' ~ documento['Documento']) }}" target="_blank">Ver Documento</a>
+                    {% else %}
+                    No disponible
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+        {% if difuntos %}
+        <h2>Difuntos Encontrados</h2>
+        <table>
+            <tr>
+                <th>Nombre Completo</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Cripta</th>
+                <th>Fecha de Defunción</th>
+                <th>Fecha</th>
+            </tr>
+            {% for difunto in difuntos %}
+            <tr>
+                <td>{{ difunto['Nombre_completo'] }}</td>
+                <td>{{ difunto['Apellido_paterno'] }}</td>
+                <td>{{ difunto['Apellido_materno'] }}</td>
+                <td>{{ difunto['Cripta'] }}</td>
+                <td>{{ difunto['Fecha_defuncion'] }}</td>
+                <td>{{ difunto['Fecha'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

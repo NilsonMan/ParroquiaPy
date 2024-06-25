@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Administración de Criptas{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Administración de Criptas</h1>
+        {% if 'username' in session %}
+        <nav>
+            <ul class="navbar">
+                <li><a href="{{ url_for('menu') }}">Inicio</a></li>
+                {% if session['role'] == 'admin' %}
+                <li><a href="{{ url_for('create_user') }}">Crear Usuario</a></li>
+                <li><a href="{{ url_for('change_password') }}">Cambiar Contraseña</a></li>
+                <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
+                <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
+                <!-- Aquí debes proporcionar un valor de 'folio' para editar_pago -->
+                <li><a href="{{ url_for('editar_pago', folio='123') }}">Editar Tabla Pagos</a></li>
+                {% endif %}
+                <!-- Corregido a 'pagos' -->
+                <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
+                <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
+                <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+        {% endif %}
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

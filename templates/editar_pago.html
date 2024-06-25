@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Pagos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <header>
+        <h1>Editar Pagos</h1>
+        <nav>
+            <ul class="navbar">
+                <li><a href="{{ url_for('menu') }}">Inicio</a></li>
+                {% if session['role'] == 'admin' %}
+                <li><a href="{{ url_for('create_user') }}">Crear Usuario</a></li>
+                <li><a href="{{ url_for('change_password') }}">Cambiar Contraseña</a></li>
+                <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
+                <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
+                <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
+                <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <!-- Formulario para añadir un nuevo pago -->
+        <div class="change-password-container">
+            <h1>Añadir Nuevo Pago</h1>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="folio">Folio:</label>
+                    <input type="text" id="folio" name="folio" required>
+                </div>
+                <div class="form-group">
+                    <label for="cripta">Cripta:</label>
+                    <input type="text" id="cripta" name="cripta" required>
+                </div>
+                <div class="form-group">
+                    <label for="saldo">Saldo:</label>
+                    <input type="number" step="0.01" id="saldo" name="saldo" required>
+                </div>
+                <div class="form-group">
+                    <label for="abono">Abono:</label>
+                    <input type="number" step="0.01" id="abono" name="abono" required>
+                </div>
+                <div class="form-group">
+                    <label for="notas">Notas:</label>
+                    <textarea id="notas" name="notas"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Añadir Pago</button>
+                </div>
+            </form>s
+
+        </div>
+
+        <!-- Tabla para mostrar los pagos existentes -->
+        <div class="change-password-container">
+            <h1>Pagos Existentes</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Folio</th>
+                        <th>Cripta</th>
+                        <th>Saldo</th>
+                        <th>Abono</th>
+                        <th>Saldo Total</th>
+                        <th>Fecha de Pago</th>
+                        <th>Notas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pago in pagos %}
+                    <tr>
+                        <td>{{ pago['Folio'] }}</td>
+                        <td>{{ pago['Cripta'] }}</td>
+                        <td>{{ pago['Saldo'] }}</td>
+                        <td>{{ pago['Abono'] }}</td>
+                        <td>{{ pago['Saldo_total'] }}</td>
+                        <td>{{ pago['Fecha_pago'] }}</td>
+                        <td>{{ pago['Notas'] }}</td>
+                        <td>
+                           <td><a href="/editar_pago/{{ pago['Folio'] }}">Editar</a></td>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mensajes flash -->
+        <ul class="flashes">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </ul>
+    </main>
+</body>
+
+</html>

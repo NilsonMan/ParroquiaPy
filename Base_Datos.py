@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS Clientes (
 )
 ''')
 
+#cursor.execute('DROP TABLE IF EXISTS Clientes')
 # Crear tabla Difuntos
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS Difuntos (
@@ -40,7 +41,7 @@ CREATE TABLE IF NOT EXISTS Difuntos (
     FOREIGN KEY (Cripta) REFERENCES Clientes(Cripta)
 )
 ''')
-
+#cursor.execute('DROP TABLE IF EXISTS Difuntos')
 # Crear tabla Familia
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS Familia (
@@ -80,6 +81,7 @@ CREATE TABLE IF NOT EXISTS Documentacion (
     FOREIGN KEY (Cripta) REFERENCES Clientes(Cripta)
 )
 ''')
+
 #cursor.execute('DROP TABLE IF EXISTS Documentacion')
 
 # Crear tabla Usuarios
@@ -91,6 +93,7 @@ CREATE TABLE IF NOT EXISTS Usuarios (
     role TEXT
 )
 ''')
+
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS ConfiguracionPagos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -98,6 +101,7 @@ CREATE TABLE IF NOT EXISTS ConfiguracionPagos (
     fecha_inicio DATE
 )
 ''')
+#cursor.execute('DROP TABLE IF EXISTS Configuracionpagos')
 cursor.execute('''
         CREATE TABLE IF NOT EXISTS Criptas (
             Cripta TEXT PRIMARY KEY,
@@ -105,6 +109,7 @@ cursor.execute('''
         )
     ''')
 
+#cursor.execute('DROP TABLE IF EXISTS Criptas')
 # Confirmar cambios y cerrar la conexión
 conexion.commit()
 conexion.close()

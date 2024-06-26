@@ -4,8 +4,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Pagos</title>
+    <title>Gestión de Pagos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Estilos para el contenedor principal */
+        .change-password-container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            margin-top: 50px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .change-password-container h1 {
+            font-size: 2.5em;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .change-password-container form {
+            width: 70%;
+            margin: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: calc(100% - 12px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-group button {
+            background-color: #04AA6D;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilos específicos para los mensajes flash */
+        .flashes {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .flashes .alert {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
 </head>
 
 <body>
@@ -28,21 +116,24 @@
         </nav>
     </header>
     <main>
+        <!-- Mostrar mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
         <!-- Formulario para añadir un nuevo pago -->
         <div class="change-password-container">
             <h1>Añadir Nuevo Pago</h1>
-            <form method="POST">
-                <div class="form-group">
-                    <label for="folio">Folio:</label>
-                    <input type="text" id="folio" name="folio" required>
-                </div>
+            <form method="POST" action="{{ url_for('pagos_cajero') }}">
                 <div class="form-group">
                     <label for="cripta">Cripta:</label>
                     <input type="text" id="cripta" name="cripta" required>
-                </div>
-                <div class="form-group">
-                    <label for="saldo">Saldo:</label>
-                    <input type="number" step="0.01" id="saldo" name="saldo" required>
                 </div>
                 <div class="form-group">
                     <label for="abono">Abono:</label>
@@ -55,8 +146,7 @@
                 <div class="form-group">
                     <button type="submit">Añadir Pago</button>
                 </div>
-            </form>s
-
+            </form>
         </div>
 
         <!-- Tabla para mostrar los pagos existentes -->
@@ -65,44 +155,30 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Folio</th>
                         <th>Cripta</th>
                         <th>Saldo</th>
                         <th>Abono</th>
                         <th>Saldo Total</th>
                         <th>Fecha de Pago</th>
                         <th>Notas</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for pago in pagos %}
                     <tr>
-                        <td>{{ pago['Folio'] }}</td>
                         <td>{{ pago['Cripta'] }}</td>
                         <td>{{ pago['Saldo'] }}</td>
                         <td>{{ pago['Abono'] }}</td>
                         <td>{{ pago['Saldo_total'] }}</td>
                         <td>{{ pago['Fecha_pago'] }}</td>
                         <td>{{ pago['Notas'] }}</td>
-                        <td>
-                           <td><a href="/editar_pago/{{ pago['Folio'] }}">Editar</a></td>
-                        </td>
+                        <td><a href="{{ url_for('editar_pago', folio=pago['Folio']) }}">Editar</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-
-        <!-- Mensajes flash -->
-        <ul class="flashes">
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
-        </ul>
     </main>
 </body>
 

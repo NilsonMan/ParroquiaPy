@@ -5,6 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Gestión de Pagos{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Estilos para el contenedor del formulario */
+        .change-password-container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            margin-top: 50px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .change-password-container h2 {
+            font-size: 2.5em;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .change-password-container form {
+            width: 70%;
+            margin: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: calc(100% - 12px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-group button {
+            background-color: #04AA6D;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilos para la tabla de pagos */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        /* Estilos para los mensajes flash */
+        .flashes {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .flashes li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            color: #333;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -13,7 +120,17 @@
         <nav>
             <ul class="navbar">
                 <li><a href="{{ url_for('menu') }}">Inicio</a></li>
+                {% if session['role'] == 'admin' %}
+                <li><a href="{{ url_for('create_user') }}">Crear Usuario</a></li>
+                <li><a href="{{ url_for('change_password') }}">Cambiar Contraseña</a></li>
+                <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
+                <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
+                <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
+                {% endif %}
                 <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
+                <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
+                <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
+                <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
         </nav>
@@ -21,45 +138,68 @@
     </header>
    
     <main>
-        <h2>Editar Pagos</h2>
-        <form method="post">
-            <label for="cripta">Cripta:</label>
-            <input type="text" id="cripta" name="cripta" required>
-            <br>
-            <label for="saldo">Saldo:</label>
-            <input type="number" id="saldo" name="saldo" required disabled>
-            <br>
-            <label for="abono">Abono:</label>
-            <input type="number" id="abono" name="abono" required>
-            <br>
-            <label for="notas">Notas:</label>
-            <textarea id="notas" name="notas"></textarea>
-            <br>
-            <button type="submit">Guardar</button>
-        </form>
-        <br>
-        <table>
-            <tr>
-                <th>Folio</th>
-                <th>Cripta</th>
-                <th>Saldo</th>
-                <th>Abono</th>
-                <th>Saldo Total</th>
-                <th>Fecha Pago</th>
-                <th>Notas</th>
-            </tr>
-            {% for pago in pagos %}
-            <tr>
-                <td>{{ pago['Folio'] }}</td>
-                <td>{{ pago['Cripta'] }}</td>
-                <td>{{ pago['Saldo'] }}</td>
-                <td>{{ pago['Abono'] }}</td>
-                <td>{{ pago['Saldo_total'] }}</td>
-                <td>{{ pago['Fecha_pago'] }}</td>
-                <td>{{ pago['Notas'] }}</td>
-            </tr>
+        <div class="change-password-container">
+            <h2>Editar Pagos</h2>
+            <form method="post">
+                <div class="form-group">
+                    <label for="cripta">Cripta:</label>
+                    <input type="text" id="cripta" name="cripta" required>
+                </div>
+                <div class="form-group">
+                    <label for="saldo">Saldo:</label>
+                    <input type="number" id="saldo" name="saldo" required disabled>
+                </div>
+                <div class="form-group">
+                    <label for="abono">Abono:</label>
+                    <input type="number" id="abono" name="abono" required>
+                </div>
+                <div class="form-group">
+                    <label for="notas">Notas:</label>
+                    <textarea id="notas" name="notas"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Guardar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Mostrar mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
             {% endfor %}
-        </table>    
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Folio</th>
+                    <th>Cripta</th>
+                    <th>Saldo</th>
+                    <th>Abono</th>
+                    <th>Saldo Total</th>
+                    <th>Fecha Pago</th>
+                    <th>Notas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pago in pagos %}
+                <tr>
+                    <td>{{ pago['Folio'] }}</td>
+                    <td>{{ pago['Cripta'] }}</td>
+                    <td>{{ pago['Saldo'] }}</td>
+                    <td>{{ pago['Abono'] }}</td>
+                    <td>{{ pago['Saldo_total'] }}</td>
+                    <td>{{ pago['Fecha_pago'] }}</td>
+                    <td>{{ pago['Notas'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </main>
 </body>
 </html>

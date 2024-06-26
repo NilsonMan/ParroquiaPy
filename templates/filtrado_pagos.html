@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtrado de Pagos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Filtrado de Pagos</h1>
+        {% if 'username' in session %}
+        <nav>
+            <ul class="navbar">
+                <li><a href="{{ url_for('menu') }}">Inicio</a></li>
+                {% if session['role'] == 'admin' %}
+                <li><a href="{{ url_for('create_user') }}">Crear Usuario</a></li>
+                <li><a href="{{ url_for('change_password') }}">Cambiar Contraseña</a></li>
+                <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
+                <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
+                <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
+                <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
+                <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
+                <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+        {% endif %}
+    </header>
+    <main>
+        <form method="get" action="{{ url_for('filtrado_pagos') }}">
+            <label for="filtro">Filtrar por período:</label>
+            <select name="filtro" id="filtro">
+                <option value="semana" {% if filtro == 'semana' %}selected{% endif %}>Semana</option>
+                <option value="mes" {% if filtro == 'mes' %}selected{% endif %}>Mes</option>
+                <option value="año" {% if filtro == 'año' %}selected{% endif %}>Año</option>
+            </select>
+            <br>
+            <label for="cripta">Filtrar por cripta:</label>
+            <input type="text" name="cripta" id="cripta" value="{{ cripta }}">
+            <br>
+            <button type="submit">Filtrar</button>
+        </form>
+        <br>
+        <table>
+            <tr>
+                <th>Folio</th>
+                <th>Cripta</th>
+                <th>Saldo</th>
+                <th>Abono</th>
+                <th>Saldo Total</th>
+                <th>Fecha Pago</th>
+                <th>Notas</th>
+            </tr>
+            {% for pago in pagos %}
+            <tr>
+                <td>{{ pago['Folio'] }}</td>
+                <td>{{ pago['Cripta'] }}</td>
+                <td>{{ pago['Saldo'] }}</td>
+                <td>{{ pago['Abono'] }}</td>
+                <td>{{ pago['Saldo_total'] }}</td>
+                <td>{{ pago['Fecha_pago'] }}</td>
+                <td>{{ pago['Notas'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </main>
+</body>
+</html>

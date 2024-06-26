@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retiro de Cenizas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Retiro de Cenizas</h1>
+        {% if 'username' in session %}
+        <nav>
+            <ul class="navbar">
+                <li><a href="{{ url_for('menu') }}">Inicio</a></li>
+                {% if session['role'] == 'admin' %}
+                <li><a href="{{ url_for('create_user') }}">Crear Usuario</a></li>
+                <li><a href="{{ url_for('change_password') }}">Cambiar Contraseña</a></li>
+                <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
+                <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
+                <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
+                <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
+                <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
+                <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+        {% endif %}
+    </header>
+
+    <main>
+        <div class="change-password-container">
+            <h2>Retirar Cenizas</h2>
+            <form method="post">
+                <div class="form-group">
+                    <label for="cripta">Cripta:</label>
+                    <input type="text" id="cripta" name="cripta" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Retirar</button>
+                </div>
+            </form>
+
+            <div class="flashes">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+
+        <h2>Difuntos en Criptas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre Completo</th>
+                    <th>Cripta</th>
+                    <th>Fecha de Defunción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for difunto in difuntos %}
+                <tr>
+                    <td>{{ difunto['ID_difunto'] }}</td>
+                    <td>{{ difunto['Nombre_completo'] }}</td>
+                    <td>{{ difunto['Cripta'] }}</td>
+                    <td>{{ difunto['Fecha_defuncion'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

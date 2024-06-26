@@ -20,9 +20,13 @@
                 <li><a href="{{ url_for('create_user') }}">Crear Usuario</a></li>
                 <li><a href="{{ url_for('change_password') }}">Cambiar Contraseña</a></li>
                 <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
+                <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
+                <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
                 {% endif %}
+                <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
                 <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
-                <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></
+                <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
+                <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
         </nav>

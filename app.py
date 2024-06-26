@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import re  
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import wraps
 from flask import session, redirect, url_for, flash
 
@@ -13,15 +13,17 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 
-def role_required(role):
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            if 'username' not in session or session.get('role') != role:
-                flash("No tienes permisos para acceder a esta página.")
-                return redirect(url_for('login'))  # Redirigir a la página de login o cualquier otra página.
-            return f(*args, **kwargs)
-        return decorated_function
+# Define la función del decorador role_required
+def role_required(allowed_roles):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            if 'role' in session and session['role'] in allowed_roles:
+                return func(*args, **kwargs)
+            else:
+                flash('No tienes permiso para acceder a esta página.', 'error')
+                return redirect(url_for('login'))  # Redirige a la página de inicio o a donde sea apropiado
+        return wrapper
     return decorator
 # Conexión a la base de datos
 def get_db_connection():
@@ -84,6 +86,10 @@ def login():
         else:
             session['username'] = user['username']
             session['role'] = user['role']
+            
+            # Limpiar mensajes flash antes de mostrar el mensaje de bienvenida
+            session.pop('_flashes', None)
+            
             flash(f'Bienvenido {username}', 'info')
             return redirect(url_for('menu'))
 
@@ -91,10 +97,14 @@ def login():
 
 @app.route('/logout')
 def logout():
+    # Limpiar todos los mensajes flash al cerrar sesión
+    session.pop('_flashes', None)
+    
     session.pop('username', None)
     session.pop('role', None)
     flash('Sesión cerrada', 'info')
     return redirect(url_for('login'))
+
 
 @app.route('/menu')
 def menu():
@@ -103,6 +113,7 @@ def menu():
     return render_template('menu.html', username=session['username'], role=session['role'])
 
 @app.route('/create_user', methods=['GET', 'POST'])
+
 def create_user():
     if 'username' not in session:
         return redirect(url_for('login'))
@@ -290,6 +301,8 @@ def buscar():
     clientes = []
     documentos = []
     difuntos = []
+    pagos = {}
+    retiros = {}
 
     # Buscar en la tabla de clientes
     cursor.execute('''
@@ -317,11 +330,24 @@ def buscar():
         ''', list(criptas))
         documentos = cursor.fetchall()
 
+        for cripta in criptas:
+            cursor.execute('''
+                SELECT * FROM Pagos WHERE Cripta = ?
+            ''', (cripta,))
+            pagos[cripta] = cursor.fetchall()
+
+            cursor.execute('''
+                SELECT Fecha_Retiro FROM Difuntos WHERE Cripta = ? AND Fecha_Retiro IS NOT NULL
+            ''', (cripta,))
+            retiro = cursor.fetchone()
+            if retiro:
+                retiros[cripta] = retiro['Fecha_Retiro']
+
     conn.close()
 
-    return render_template('resultados_busqueda.html', query=query, clientes=clientes, documentos=documentos, difuntos=difuntos)
+    return render_template('resultados_busqueda.html', query=query, clientes=clientes, documentos=documentos, difuntos=difuntos, pagos=pagos, retiros=retiros)
 
-#editar pagos administrativos
+
 @app.route('/editar_pago/<folio>', methods=['GET', 'POST'])
 @role_required('admin')
 def editar_pago(folio):
@@ -330,31 +356,44 @@ def editar_pago(folio):
 
     if request.method == 'POST':
         cripta = request.form['cripta']
-        saldo = request.form['saldo']
-        abono = request.form['abono']
+        abono = float(request.form['abono'])
         notas = request.form['notas']
 
-        # Calculamos el saldo total
-        saldo_total = float(saldo) - float(abono)
+        # Obtener el saldo actual de la cripta
+        cursor.execute('SELECT Saldo FROM Criptas WHERE Cripta = ?', (cripta,))
+        result = cursor.fetchone()
 
-        # Generamos el folio automáticamente
-        new_folio = generate_folio()
+        if result is None:
+            flash(f'Cripta {cripta} no encontrada', 'error')
+            return redirect(url_for('editar_pago', folio=folio))
+
+        saldo_actual = float(result['Saldo'])
+
+        # Calculamos el saldo total después del abono
+        saldo_total = saldo_actual - abono
 
         fecha_pago = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+        # Insertar el pago con el saldo actualizado
         cursor.execute('''
             INSERT INTO Pagos (Folio, Cripta, Saldo, Abono, Saldo_total, Fecha_pago, Notas)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (new_folio, cripta, saldo, abono, saldo_total, fecha_pago, notas))
+        ''', (folio, cripta, saldo_actual, abono, saldo_total, fecha_pago, notas))
+
+        # Actualizar el saldo de la cripta
+        cursor.execute('UPDATE Criptas SET Saldo = ? WHERE Cripta = ?', (saldo_total, cripta))
 
         conn.commit()
         flash('Pago añadido exitosamente', 'success')
+        return redirect(url_for('editar_pago', folio=folio))  # Redirigir a la misma página de edición después de guardar el pago
 
-    cursor.execute('SELECT * FROM Pagos')
+    # Obtener los datos del pago actual
+    cursor.execute('SELECT * FROM Pagos WHERE Folio = ?', (folio,))
     pagos = cursor.fetchall()
 
     conn.close()
     return render_template('editar_pago.html', pagos=pagos)
+
 
 
 # Función para generar un nuevo folio automáticamente
@@ -386,10 +425,10 @@ def get_pagos():
     pagos = cursor.fetchall()
     conn.close()
     return pagos
-
-# Ruta para la gestión de pagos por el cajero
+#Pagos para cajeros 
 @app.route('/pagos_cajero', methods=['GET', 'POST'])
-@role_required('cajera')
+@role_required(['cajera', 'admin']) 
+
 def pagos_cajero():
     if request.method == 'POST':
         cripta = request.form['cripta']
@@ -399,40 +438,49 @@ def pagos_cajero():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # Obtener el saldo actual de la cripta
-        cursor.execute('SELECT Saldo FROM Criptas WHERE Cripta = ?', (cripta,))
-        saldo_actual = cursor.fetchone()
+        try:
+            # Obtener el saldo actual de la cripta
+            cursor.execute('SELECT Saldo FROM Criptas WHERE Cripta = ?', (cripta,))
+            result = cursor.fetchone()
 
-        if saldo_actual:
-            saldo = saldo_actual['Saldo']
-            saldo_total = saldo - abono
+            if result:
+                saldo_actual = float(result['Saldo'])
+                saldo_total = saldo_actual - abono
 
-            # Generamos el folio automáticamente
-            new_folio = generate_folio()
+                # Generar el folio automáticamente
+                new_folio = generate_folio()
 
-            fecha_pago = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                fecha_pago = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-            # Insertar el pago en la base de datos
-            cursor.execute('''
-                INSERT INTO Pagos (Folio, Cripta, Saldo, Abono, Saldo_total, Fecha_pago, Notas)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ''', (new_folio, cripta, saldo, abono, saldo_total, fecha_pago, notas))
+                # Insertar el pago en la base de datos
+                cursor.execute('''
+                    INSERT INTO Pagos (Folio, Cripta, Saldo, Abono, Saldo_total, Fecha_pago, Notas)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                ''', (new_folio, cripta, saldo_actual, abono, saldo_total, fecha_pago, notas))
 
-            conn.commit()
+                # Actualizar el saldo de la cripta
+                cursor.execute('UPDATE Criptas SET Saldo = ? WHERE Cripta = ?', (saldo_total, cripta))
+
+                conn.commit()
+
+                # Mostrar mensaje flash y redirigir
+                flash('Pago añadido exitosamente', 'success')
+                return redirect(url_for('pagos_cajero'))
+
+            else:
+                flash(f'La cripta {cripta} no existe en la base de datos.', 'error')
+                return redirect(url_for('pagos_cajero'))
+
+        except Exception as e:
+            flash(f'Error al agregar el pago: {str(e)}', 'error')
+
+        finally:
             conn.close()
-
-            flash('Pago añadido exitosamente', 'success')
-            return redirect(url_for('pagos_cajero'))
-        else:
-            conn.close()
-            flash(f'La cripta {cripta} no existe en la base de datos.', 'error')
-            return redirect(url_for('pagos_cajero'))
 
     # Obtener todos los pagos
     pagos = get_pagos()
 
     return render_template('pagos.html', pagos=pagos)
-
 
 # Ruta para configurar pagos
 @app.route('/configurar_pagos', methods=['GET', 'POST'])
@@ -488,7 +536,73 @@ def agregar_cripta():
 
     return redirect(url_for('configurar_pagos'))
 
-# Función para generar el ticket en formato PDF
+#funcion de retiro de cenizas 
+@app.route('/retiro_cenizas', methods=['GET', 'POST'])
+@role_required(['cajera', 'admin'])
+def retiro_cenizas():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        cripta = request.form['cripta']
+        fecha_retiro = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        cursor.execute('SELECT * FROM Difuntos WHERE Cripta = ? AND Fecha_Retiro IS NULL', (cripta,))
+        difuntos = cursor.fetchall()
+
+        if not difuntos:
+            flash(f'No se encontraron difuntos en la cripta {cripta} o ya fueron retirados', 'error')
+        else:
+            cursor.execute('UPDATE Difuntos SET Fecha_Retiro = ? WHERE Cripta = ?', (fecha_retiro, cripta))
+            conn.commit()
+            flash('Cenizas retiradas exitosamente', 'success')
+
+    cursor.execute('SELECT * FROM Difuntos WHERE Fecha_Retiro IS NULL')
+    difuntos = cursor.fetchall()
+    conn.close()
+
+    return render_template('retiro_cenizas.html', difuntos=difuntos)
+
+#funcion de giltrado de pagos 
+
+@app.route('/filtrado_pagos', methods=['GET', 'POST'])
+@role_required('admin')
+def filtrado_pagos():
+    filtro = request.args.get('filtro', 'mes')
+    cripta = request.args.get('cripta', None)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    today = datetime.today()
+    start_date = None
+
+    if filtro == 'semana':
+        start_date = today - timedelta(days=today.weekday())  # Start of the current week
+    elif filtro == 'mes':
+        start_date = today.replace(day=1)  # Start of the current month
+    elif filtro == 'año':
+        start_date = today.replace(month=1, day=1)  # Start of the current year
+
+    query = 'SELECT * FROM Pagos WHERE 1=1'
+    params = []
+
+    if start_date:
+        start_date_str = start_date.strftime('%Y-%m-%d')
+        query += ' AND Fecha_pago >= ?'
+        params.append(start_date_str)
+
+    if cripta:
+        query += ' AND Cripta = ?'
+        params.append(cripta)
+
+    cursor.execute(query, params)
+    pagos = cursor.fetchall()
+    conn.close()
+    
+    return render_template('filtrado_pagos.html', pagos=pagos, filtro=filtro, cripta=cripta)
+
+# Asegúrate de tener otras rutas y funciones aquí, como login, menu, etc.
+
 
 if __name__ == '__main__':
     app.run(debug=True)

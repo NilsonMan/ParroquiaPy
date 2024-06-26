@@ -89,6 +89,7 @@
                 <th>Cripta</th>
                 <th>Fecha de Defunción</th>
                 <th>Fecha</th>
+                <th>Fecha de Retiro</th>
             </tr>
             {% for difunto in difuntos %}
             <tr>
@@ -98,9 +99,37 @@
                 <td>{{ difunto['Cripta'] }}</td>
                 <td>{{ difunto['Fecha_defuncion'] }}</td>
                 <td>{{ difunto['Fecha'] }}</td>
+                <td>{{ difunto['Fecha_Retiro'] }}</td>
             </tr>
             {% endfor %}
         </table>
+        {% endif %}
+
+        {% if pagos %}
+        <h2>Pagos Asociados</h2>
+        {% for cripta, pagos_lista in pagos.items() %}
+        <h3>Cripta: {{ cripta }}</h3>
+        <table>
+            <tr>
+                <th>Folio</th>
+                <th>Saldo</th>
+                <th>Abono</th>
+                <th>Saldo Total</th>
+                <th>Fecha Pago</th>
+                <th>Notas</th>
+            </tr>
+            {% for pago in pagos_lista %}
+            <tr>
+                <td>{{ pago['Folio'] }}</td>
+                <td>{{ pago['Saldo'] }}</td>
+                <td>{{ pago['Abono'] }}</td>
+                <td>{{ pago['Saldo_total'] }}</td>
+                <td>{{ pago['Fecha_pago'] }}</td>
+                <td>{{ pago['Notas'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endfor %}
         {% endif %}
     {% endif %}
 </div>

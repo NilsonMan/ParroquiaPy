@@ -6,7 +6,7 @@
 <div class="results-container">
     <h1>Resultados de Búsqueda para "{{ query }}"</h1>
 
-    {% if not clientes and not difuntos %}
+    {% if not clientes and not documentos and not difuntos and not pagos %}
         <p>No se encontraron resultados.</p>
     {% else %}
         {% if clientes %}
@@ -30,6 +30,7 @@
                     <th>Apellido Materno Beneficiario 2</th>
                     <th>Teléfono Beneficiario 2</th>
                     <th>Dirección Beneficiario 2</th>
+                    <th>Acciones</th>
                 </tr>
                 {% for cliente in clientes %}
                 <tr>
@@ -49,6 +50,11 @@
                     <td>{{ cliente['Apellido_materno_Beneficiario2'] }}</td>
                     <td>{{ cliente['Telefono_Beneficiario2'] }}</td>
                     <td>{{ cliente['Direccion_Beneficiario2'] }}</td>
+                    <td>
+                        <form action="{{ url_for('eliminar_cliente', cripta=cliente['Cripta']) }}" method="post" style="display:inline;">
+                            <button type="submit" onclick="return confirm('¿Está seguro de que desea eliminar este cliente?');">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
@@ -64,6 +70,7 @@
                     <th>Tipo de Documento</th>
                     <th>Observaciones</th>
                     <th>Documento</th>
+                    <th>Acciones</th>
                 </tr>
                 {% for documento in documentos %}
                 <tr>
@@ -72,10 +79,15 @@
                     <td>{{ documento['Observaciones'] }}</td>
                     <td>
                         {% if documento['Documento'] %}
-                        <a href="{{ url_for('static', filename='uploads/' ~ documento['Documento']) }}" target="_blank">Ver Documento</a>
+                        <a href="{{ url_for('download_file', filename=documento['Documento']) }}" download>Descargar Documento</a>
                         {% else %}
                         No disponible
                         {% endif %}
+                    </td>
+                    <td>
+                        <form action="{{ url_for('eliminar_documento', id=documento['id']) }}" method="post" style="display:inline;">
+                            <button type="submit" onclick="return confirm('¿Está seguro de que desea eliminar este documento?');">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
@@ -95,6 +107,7 @@
                     <th>Fecha de Defunción</th>
                     <th>Fecha</th>
                     <th>Fecha de Retiro</th>
+                    <th>Acciones</th>
                 </tr>
                 {% for difunto in difuntos %}
                 <tr>
@@ -105,6 +118,11 @@
                     <td>{{ difunto['Fecha_defuncion'] }}</td>
                     <td>{{ difunto['Fecha'] }}</td>
                     <td>{{ difunto['Fecha_Retiro'] }}</td>
+                    <td>
+                        <form action="{{ url_for('eliminar_difunto', id=difunto['id']) }}" method="post" style="display:inline;">
+                            <button type="submit" onclick="return confirm('¿Está seguro de que desea eliminar este difunto?');">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
@@ -124,6 +142,7 @@
                     <th>Saldo Total</th>
                     <th>Fecha Pago</th>
                     <th>Notas</th>
+                    <th>Acciones</th>
                 </tr>
                 {% for pago in pagos_lista %}
                 <tr>
@@ -133,6 +152,11 @@
                     <td>{{ pago['Saldo_total'] }}</td>
                     <td>{{ pago['Fecha_pago'] }}</td>
                     <td>{{ pago['Notas'] }}</td>
+                    <td>
+                        <form action="{{ url_for('eliminar_pago', id=pago['id']) }}" method="post" style="display:inline;">
+                            <button type="submit" onclick="return confirm('¿Está seguro de que desea eliminar este pago?');">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </table>

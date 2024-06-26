@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from werkzeug.utils import secure_filename
 import re  
+from flask import send_from_directory
 import sqlite3
 from datetime import datetime, timedelta
 from functools import wraps
@@ -183,6 +185,7 @@ def delete_user():
     usuarios = get_usuarios()
     return render_template('delete_user.html', users=usuarios)
 
+#agregar nuevo cliente y validacion de cripta 
 @app.route('/agregar_cliente', methods=['GET', 'POST'])
 def agregar_cliente():
     if 'username' not in session:
@@ -208,22 +211,31 @@ def agregar_cliente():
 
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO clientes (CRIPTA, Nombre_titular, Apellido_paterno, Apellido_materno, Telefono1, Direccion1, '
-                       'Nombre_Beneficiario, Apellido_paterno_Beneficiario, Apellido_materno_Beneficiario, Telefono_Beneficiario, '
-                       'Direccion_Beneficiario, Nombre_Beneficiario2, Apellido_paterno_Beneficiario2, Apellido_materno_Beneficiario2, '
-                       'Telefono_Beneficiario2, Direccion_Beneficiario2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                       (cripta, nombre_titular, apellido_paterno, apellido_materno, telefono1, direccion1, nombre_beneficiario,
-                        apellido_paterno_beneficiario, apellido_materno_beneficiario, telefono_beneficiario, direccion_beneficiario,
-                        nombre_beneficiario2, apellido_paterno_beneficiario2, apellido_materno_beneficiario2, telefono_beneficiario2,
-                        direccion_beneficiario2))
-        conn.commit()
-        conn.close()
 
-        flash('Cliente agregado correctamente', 'info')
+        # Verificar si ya existe un usuario con el mismo valor de cripta
+        cursor.execute('SELECT * FROM clientes WHERE CRIPTA = ?', (cripta,))
+        existing_cliente = cursor.fetchone()
+
+        if existing_cliente:
+            flash('Ya existe un cliente con el mismo valor de cripta', 'error')
+        else:
+            cursor.execute('INSERT INTO clientes (CRIPTA, Nombre_titular, Apellido_paterno, Apellido_materno, Telefono1, Direccion1, '
+                           'Nombre_Beneficiario, Apellido_paterno_Beneficiario, Apellido_materno_Beneficiario, Telefono_Beneficiario, '
+                           'Direccion_Beneficiario, Nombre_Beneficiario2, Apellido_paterno_Beneficiario2, Apellido_materno_Beneficiario2, '
+                           'Telefono_Beneficiario2, Direccion_Beneficiario2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                           (cripta, nombre_titular, apellido_paterno, apellido_materno, telefono1, direccion1, nombre_beneficiario,
+                            apellido_paterno_beneficiario, apellido_materno_beneficiario, telefono_beneficiario, direccion_beneficiario,
+                            nombre_beneficiario2, apellido_paterno_beneficiario2, apellido_materno_beneficiario2, telefono_beneficiario2,
+                            direccion_beneficiario2))
+            conn.commit()
+            flash('Cliente agregado correctamente', 'info')
+
+        conn.close()
         return redirect(url_for('agregar_cliente'))
 
     clientes = get_clientes()
     return render_template('agregar_cliente.html', clientes=clientes)
+
 
 @app.route('/agregar_difunto', methods=['GET', 'POST'])
 def agregar_difunto():
@@ -265,7 +277,13 @@ def verificar_documentacion():
         # Verificamos si se ha enviado algún archivo
         if documento:
             filename = secure_filename(documento.filename)
-            path_to_save = os.path.join(app.root_path, 'uploads', filename)
+            upload_folder = os.path.join(app.root_path, 'static', 'uploads')
+            
+            # Asegúrate de que el directorio exista
+            if not os.path.exists(upload_folder):
+                os.makedirs(upload_folder)
+
+            path_to_save = os.path.join(upload_folder, filename)
             documento.save(path_to_save)
             flash('Documento subido correctamente', 'info')
         else:
@@ -283,6 +301,12 @@ def verificar_documentacion():
 
     clientes = get_clientes()
     return render_template('agregar_cliente.html', clientes=clientes)
+
+@app.route('/download/<filename>')
+def download_file(filename):
+    upload_folder = os.path.join(app.root_path, 'static', 'uploads')
+    return send_from_directory(upload_folder, filename, as_attachment=True)
+
 #buscador menu 
 @app.route('/buscar', methods=['GET'])
 def buscar():
@@ -601,8 +625,61 @@ def filtrado_pagos():
     
     return render_template('filtrado_pagos.html', pagos=pagos, filtro=filtro, cripta=cripta)
 
-# Asegúrate de tener otras rutas y funciones aquí, como login, menu, etc.
+# eliminar docuemntos usuarios etc from flask import redirect, url_for, request, flash
+
+@app.route('/eliminar_cliente/<cripta>', methods=['POST'])
+def eliminar_cliente(cripta):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM clientes WHERE Cripta = ?', (cripta,))
+    conn.commit()
+    conn.close()
+    flash('Cliente eliminado correctamente', 'info')
+    return redirect(url_for('verificar_documentacion'))
+
+@app.route('/eliminar_documento/<id>', methods=['POST'])
+def eliminar_documento(id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM documentacion WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    flash('Documento eliminado correctamente', 'info')
+    return redirect(url_for('verificar_documentacion'))
+
+@app.route('/eliminar_difunto/<id>', methods=['POST'])
+def eliminar_difunto(id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM difuntos WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    flash('Difunto eliminado correctamente', 'info')
+    return redirect(url_for('verificar_documentacion'))
+
+@app.route('/eliminar_pago/<id>', methods=['POST'])
+def eliminar_pago(id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM pagos WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    flash('Pago eliminado correctamente', 'info')
+    return redirect(url_for('verificar_documentacion'))
+
 
 
 if __name__ == '__main__':
-     app.run(host='192.168.0.12', port=5000, debug=True)
+     app.run(host='192.168.100.193', port=5000, debug=True)

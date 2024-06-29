@@ -625,61 +625,8 @@ def filtrado_pagos():
     
     return render_template('filtrado_pagos.html', pagos=pagos, filtro=filtro, cripta=cripta)
 
-# eliminar docuemntos usuarios etc from flask import redirect, url_for, request, flash
-
-@app.route('/eliminar_cliente/<cripta>', methods=['POST'])
-def eliminar_cliente(cripta):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM clientes WHERE Cripta = ?', (cripta,))
-    conn.commit()
-    conn.close()
-    flash('Cliente eliminado correctamente', 'info')
-    return redirect(url_for('verificar_documentacion'))
-
-@app.route('/eliminar_documento/<id>', methods=['POST'])
-def eliminar_documento(id):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM documentacion WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
-    flash('Documento eliminado correctamente', 'info')
-    return redirect(url_for('verificar_documentacion'))
-
-@app.route('/eliminar_difunto/<id>', methods=['POST'])
-def eliminar_difunto(id):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM difuntos WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
-    flash('Difunto eliminado correctamente', 'info')
-    return redirect(url_for('verificar_documentacion'))
-
-@app.route('/eliminar_pago/<id>', methods=['POST'])
-def eliminar_pago(id):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM pagos WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
-    flash('Pago eliminado correctamente', 'info')
-    return redirect(url_for('verificar_documentacion'))
 
 
 
 if __name__ == '__main__':
-     app.run(host='192.168.100.193', port=5000, debug=True)
+     app.run(host='192.168.0.194', port=5000, debug=True)

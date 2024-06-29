@@ -6,12 +6,12 @@
 <div class="results-container">
     <h1>Resultados de Búsqueda para "{{ query }}"</h1>
 
-    {% if not clientes and not documentos and not difuntos and not pagos %}
+    {% if not clientes and not difuntos and not documentos and not pagos %}
         <p>No se encontraron resultados.</p>
     {% else %}
         {% if clientes %}
         <h2>Clientes Encontrados</h2>
-        <div class="overflow-x-auto">
+        <div class="table-wrapper">
             <table>
                 <tr>
                     <th>Cripta</th>
@@ -30,7 +30,6 @@
                     <th>Apellido Materno Beneficiario 2</th>
                     <th>Teléfono Beneficiario 2</th>
                     <th>Dirección Beneficiario 2</th>
-                    <th>Acciones</th>
                 </tr>
                 {% for cliente in clientes %}
                 <tr>
@@ -50,11 +49,6 @@
                     <td>{{ cliente['Apellido_materno_Beneficiario2'] }}</td>
                     <td>{{ cliente['Telefono_Beneficiario2'] }}</td>
                     <td>{{ cliente['Direccion_Beneficiario2'] }}</td>
-                    <td>
-                        <form action="{{ url_for('eliminar_cliente', cripta=cliente['Cripta']) }}" method="post" style="display:inline;">
-                            <button type="submit" onclick="return confirm('¿Está seguro de que desea eliminar este cliente?');">Eliminar</button>
-                        </form>
-                    </td>
                 </tr>
                 {% endfor %}
             </table>
@@ -63,14 +57,13 @@
 
         {% if documentos %}
         <h2>Documentación Asociada</h2>
-        <div class="overflow-x-auto">
+        <div class="table-wrapper">
             <table>
                 <tr>
                     <th>Cripta</th>
                     <th>Tipo de Documento</th>
                     <th>Observaciones</th>
                     <th>Documento</th>
-                    <th>Acciones</th>
                 </tr>
                 {% for documento in documentos %}
                 <tr>
@@ -84,11 +77,6 @@
                         No disponible
                         {% endif %}
                     </td>
-                    <td>
-                        <form action="{{ url_for('eliminar_documento', id=documento['id']) }}" method="post" style="display:inline;">
-                            <button type="submit" onclick="return confirm('¿Está seguro de que desea eliminar este documento?');">Eliminar</button>
-                        </form>
-                    </td>
                 </tr>
                 {% endfor %}
             </table>
@@ -97,7 +85,7 @@
 
         {% if difuntos %}
         <h2>Difuntos Encontrados</h2>
-        <div class="overflow-x-auto">
+        <div class="table-wrapper">
             <table>
                 <tr>
                     <th>Nombre Completo</th>
@@ -107,7 +95,6 @@
                     <th>Fecha de Defunción</th>
                     <th>Fecha</th>
                     <th>Fecha de Retiro</th>
-                    <th>Acciones</th>
                 </tr>
                 {% for difunto in difuntos %}
                 <tr>
@@ -118,11 +105,6 @@
                     <td>{{ difunto['Fecha_defuncion'] }}</td>
                     <td>{{ difunto['Fecha'] }}</td>
                     <td>{{ difunto['Fecha_Retiro'] }}</td>
-                    <td>
-                        <form action="{{ url_for('eliminar_difunto', id=difunto['id']) }}" method="post" style="display:inline;">
-                            <button type="submit" onclick="return confirm('¿Está seguro de que desea eliminar este difunto?');">Eliminar</button>
-                        </form>
-                    </td>
                 </tr>
                 {% endfor %}
             </table>
@@ -133,7 +115,7 @@
         <h2>Pagos Asociados</h2>
         {% for cripta, pagos_lista in pagos.items() %}
         <h3>Cripta: {{ cripta }}</h3>
-        <div class="overflow-x-auto">
+        <div class="table-wrapper">
             <table>
                 <tr>
                     <th>Folio</th>
@@ -142,7 +124,6 @@
                     <th>Saldo Total</th>
                     <th>Fecha Pago</th>
                     <th>Notas</th>
-                    <th>Acciones</th>
                 </tr>
                 {% for pago in pagos_lista %}
                 <tr>
@@ -152,11 +133,6 @@
                     <td>{{ pago['Saldo_total'] }}</td>
                     <td>{{ pago['Fecha_pago'] }}</td>
                     <td>{{ pago['Notas'] }}</td>
-                    <td>
-                        <form action="{{ url_for('eliminar_pago', id=pago['id']) }}" method="post" style="display:inline;">
-                            <button type="submit" onclick="return confirm('¿Está seguro de que desea eliminar este pago?');">Eliminar</button>
-                        </form>
-                    </td>
                 </tr>
                 {% endfor %}
             </table>
@@ -164,5 +140,48 @@
         {% endfor %}
         {% endif %}
     {% endif %}
+    
+    <!-- Botón para imprimir -->
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="imprimirResultados()">Imprimir Resultados</button>
+    </div>
 </div>
-{% endblock %}
+
+
+<script>
+    function imprimirResultados() {
+        window.print();
+    }
+    </script>
+    
+    {% endblock %}
+    
+    {% block styles %}
+    <style>
+    /* Estilos para la tabla */
+    .table-wrapper {
+        overflow-x: auto;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .print-table {
+        width: 100%;
+        table-layout: fixed; /* Fijar el ancho de la tabla para evitar que se expanda más allá del contenedor */
+        border-collapse: collapse;
+    }
+    
+    .print-table th, .print-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        white-space: nowrap; /* Evitar el corte de texto en las celdas */
+        overflow: hidden; /* Ocultar el contenido que sobresale */
+        text-overflow: ellipsis; /* Mostrar puntos suspensivos (...) cuando el contenido no cabe */
+    }
+    
+    .print-table th {
+        background-color: #f2f2f2;
+    }
+    </style>
+    {% endblock %}

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Editar Pago</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Documentación</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Editar Pago</h1>
+        <h1>Editar Documentación</h1>
         <nav>
             <ul class="navbar">
                 <li><a href="{{ url_for('menu') }}">Inicio</a></li>
@@ -27,19 +29,16 @@
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
         </nav>
-        <form method="post">
-            <label>Cripta:</label>
-            <input type="text" name="cripta" value="{{ pago.Cripta }}">
-            <label>Saldo:</label>
-            <input type="text" name="saldo" value="{{ pago.Saldo }}">
-            <label>Abono:</label>
-            <input type="text" name="abono" value="{{ pago.Abono }}">
-            <label>Saldo Total:</label>
-            <input type="text" name="saldo_total" value="{{ pago.Saldo_total }}">
-            <label>Fecha de Pago:</label>
-            <input type="text" name="fecha_pago" value="{{ pago.Fecha_pago }}">
-            <label>Notas:</label>
-            <input type="text" name="notas" value="{{ pago.Notas }}">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="id_documentacion" value="{{ doc.ID_documentacion }}">
+            <label for="cripta">Cripta:</label>
+            <input type="text" name="cripta" id="cripta" value="{{ doc.Cripta }}" required readonly>
+            <label for="tipo_documento">Tipo de Documento:</label>
+            <input type="text" name="tipo_documento" id="tipo_documento" value="{{ doc.Tipo_documento }}" required>
+            <label for="observaciones">Observaciones:</label>
+            <textarea name="observaciones" id="observaciones">{{ doc.Observaciones }}</textarea>
+            <label for="documento">Documento:</label>
+            <input type="file" name="documento" id="documento">
             <button type="submit">Guardar Cambios</button>
         </form>
     </div>

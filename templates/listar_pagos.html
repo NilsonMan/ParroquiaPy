@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <div class="container"> </div>
-    <title>Filtrado de Pagos</title>
+    <title>Lista de Pagos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <header>
-        <div class="container"><h1>Filtrado de Pagos</h1> </div>
+        <div class="container"><h1>Lista de Pagos</h1> </div>
         
-        {% if 'username' in session %}
         <nav>
             <ul class="navbar">
                 <li><a href="{{ url_for('menu') }}">Inicio</a></li>
@@ -32,54 +29,41 @@
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
         </nav>
-        {% endif %}
-    </header>
-    <main>
-        <form method="get" action="{{ url_for('filtrado_pagos') }}">
-            <label for="filtro">Filtrar por período:</label>
-            <select name="filtro" id="filtro">
-                <option value="semana" {% if filtro == 'semana' %}selected{% endif %}>Semana</option>
-                <option value="mes" {% if filtro == 'mes' %}selected{% endif %}>Mes</option>
-                <option value="año" {% if filtro == 'año' %}selected{% endif %}>Año</option>
-            </select>
-            <br>
-            <label for="cripta">Filtrar por cripta:</label>
-            <input type="text" name="cripta" id="cripta" value="{{ cripta }}">
-            <br>
-            <button type="submit">Filtrar</button>
+
+        <!-- Formulario de búsqueda por cripta -->
+        <form action="{{ url_for('listar_pagos') }}" method="post">
+            <label for="cripta">Buscar por Cripta:</label>
+            <input type="text" id="cripta" name="cripta" required>
+            <button type="submit">Buscar</button>
         </form>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class="flashes">
-                    {% for message in messages %}
-                        <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-        <br>
+
         <table>
             <tr>
-                <th>Folio</th>
                 <th>Cripta</th>
                 <th>Saldo</th>
                 <th>Abono</th>
                 <th>Saldo Total</th>
-                <th>Fecha Pago</th>
+                <th>Fecha de Pago</th>
                 <th>Notas</th>
+                <th>Acciones</th>
             </tr>
             {% for pago in pagos %}
             <tr>
-                <td>{{ pago['Folio'] }}</td>
-                <td>{{ pago['Cripta'] }}</td>
-                <td>{{ pago['Saldo'] }}</td>
-                <td>{{ pago['Abono'] }}</td>
-                <td>{{ pago['Saldo_total'] }}</td>
-                <td>{{ pago['Fecha_pago'] }}</td>
-                <td>{{ pago['Notas'] }}</td>
+                <td>{{ pago.Cripta }}</td>
+                <td>{{ pago.Saldo }}</td>
+                <td>{{ pago.Abono }}</td>
+                <td>{{ pago.Saldo_total }}</td>
+                <td>{{ pago.Fecha_pago }}</td>
+                <td>{{ pago.Notas }}</td>
+                <td>
+                    <a href="{{ url_for('editar_pago', folio=pago.Folio) }}">Editar</a>
+                    <form action="{{ url_for('eliminar_pago', folio=pago.Folio) }}" method="post" style="display:inline;">
+                        <button type="submit">Eliminar</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </table>
-    </main>
+    
 </body>
 </html>

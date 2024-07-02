@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session,  make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, session,send_file,  make_response
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from werkzeug.utils import secure_filename
 import re  
+import io
 from flask import send_from_directory
 import sqlite3
 from datetime import datetime, timedelta
@@ -372,44 +373,6 @@ def buscar():
     return render_template('resultados_busqueda.html', query=query, clientes=clientes, documentos=documentos, difuntos=difuntos, pagos=pagos, retiros=retiros)
 
 
-@app.route('/editar_pago/<folio>', methods=['GET', 'POST'])
-@role_required('admin')
-def editar_pago(folio):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    if request.method == 'POST':
-        cripta = request.form['cripta']
-        abono = float(request.form['abono'])
-        notas = request.form['notas']
-
-        # Obtener el saldo actual de la cripta
-        cursor.execute('SELECT Saldo FROM Criptas WHERE Cripta = ?', (cripta,))
-        result = cursor.fetchone()
-
-        if result is None:
-            flash(f'Cripta {cripta} no encontrada', 'error')
-            return redirect(url_for('editar_pago', folio=folio))
-
-        saldo_actual = float(result['Saldo'])
-
-        # Calculamos el saldo total después del abono
-        saldo_total = saldo_actual - abono
-
-        fecha_pago = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        # Insertar el pago con el saldo actualizado
-        cursor.execute('''
-            INSERT INTO Pagos (Folio, Cripta, Saldo, Abono, Saldo_total, Fecha_pago, Notas)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (folio, cripta, saldo_actual, abono, saldo_total, fecha_pago, notas))
-
-        # Actualizar el saldo de la cripta
-        cursor.execute('UPDATE Criptas SET Saldo = ? WHERE Cripta = ?', (saldo_total, cripta))
-
-        conn.commit()
-        flash('Pago añadido exitosamente', 'success')
-        return redirect(url_for('editar_pago', folio=folio))  # Redirigir a la misma página de edición después de guardar el pago
 
     # Obtener los datos del pago actual
     cursor.execute('SELECT * FROM Pagos WHERE Folio = ?', (folio,))
@@ -506,41 +469,76 @@ def pagos_cajero():
 
     return render_template('pagos.html', pagos=pagos)
 
-# Ruta para configurar pagos
+# Ruta para configurar pagos anuales
+# Registrar adaptador para manejar datetime con SQLite
+
+# Ruta para configurar los pagos y actualizar saldo en todas las criptas
+
+def sumar_a_saldos(monto_sumar):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Obtener todas las criptas y sumarles el monto especificado
+    cursor.execute('UPDATE Criptas SET Saldo = Saldo + ?', (monto_sumar,))
+    
+    conn.commit()
+    conn.close()
+
+
+
 @app.route('/configurar_pagos', methods=['GET', 'POST'])
 @role_required('admin')
 def configurar_pagos():
     if request.method == 'POST':
-        # Obtener los datos del formulario
         monto_mantenimiento = float(request.form['monto_mantenimiento'])
-        fecha_inicio = request.form['fecha_inicio']
+        
+        # Guardar el historial de cobro de mantenimiento
+        guardar_cobro_mantenimiento(monto_mantenimiento)
 
-        # Aquí deberías implementar la lógica para guardar la configuración en la base de datos
-        # Supongamos que guardamos la configuración en una lista para simulación
-        configuracion = {
-            'monto_mantenimiento': monto_mantenimiento,
-            'fecha_inicio': fecha_inicio
-        }
-        # Lógica para guardar la configuración en la base de datos
-
-        # Redirigir nuevamente a la misma página para evitar reenvíos de formulario
+        flash('Cobro de mantenimiento registrado correctamente.', 'success')
         return redirect(url_for('configurar_pagos'))
 
     # Obtener la configuración actual (esto dependerá de cómo almacenes la configuración)
-    configuracion = obtener_configuracion_de_pagos()  # Esta función debe obtener la configuración actual
+    configuracion = obtener_configuracion_de_pagos()
 
-    # Renderizar la plantilla con la configuración actual
     return render_template('configurar_pagos.html', configuracion=configuracion)
 
-# Función de ejemplo para obtener la configuración de pagos
+def guardar_cobro_mantenimiento(monto):
+    # Guardar el registro de cobro de mantenimiento en la nueva tabla
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    fecha_cobro = datetime.date.today()  # Fecha actual
+    cursor.execute('INSERT INTO CobrosMantenimiento (fecha_cobro, monto) VALUES (?, ?)', (fecha_cobro, monto))
+    conn.commit()
+    conn.close()
+    
 def obtener_configuracion_de_pagos():
-    # Esta es una función de ejemplo, debes adaptarla según cómo almacenes la configuración
-    return {
-        'monto_mantenimiento': 1500.0,
-        'fecha_inicio': '2024-01-01'
-    }
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT monto_mantenimiento, fecha_inicio, hora_inicio FROM ConfiguracionPagos WHERE id = 1')
+    configuracion = cursor.fetchone()
+    conn.close()
 
+    if configuracion:
+        return {
+            'monto_mantenimiento': configuracion[0],
+            'fecha_inicio': configuracion[1].strftime('%Y-%m-%d'),
+            'hora_inicio': configuracion[2]
+        }
+    else:
+        return {
+            'monto_mantenimiento': 0.0,
+            'fecha_inicio': datetime.now().strftime('%Y-%m-%d'),
+            'hora_inicio': datetime.now().strftime('%H:%M')
+        }
 
+@app.route('/sumar_saldos', methods=['POST'])
+@role_required('admin')
+def sumar_saldos():
+    monto_sumar = float(request.form['monto_sumar'])
+    sumar_a_saldos(monto_sumar)
+    flash('Se ha sumado el monto a todos los saldos de las criptas.', 'success')
+    return redirect(url_for('configurar_pagos'))
 
 ################################################################################3
 @app.route('/agregar_cripta', methods=['POST'])
@@ -624,9 +622,228 @@ def filtrado_pagos():
     conn.close()
     
     return render_template('filtrado_pagos.html', pagos=pagos, filtro=filtro, cripta=cripta)
+#buscar por cripta de clientes en la opcion de listados 
+@app.route('/clientes', methods=['GET', 'POST'])
+def listar_clientes():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        cripta = request.form['cripta']
+        cursor.execute('SELECT * FROM clientes WHERE Cripta = ?', (cripta,))
+        clientes = cursor.fetchall()
+        conn.close()
+        return render_template('listar_clientes.html', clientes=clientes, cripta=cripta)
+
+    cursor.execute('SELECT * FROM clientes')
+    clientes = cursor.fetchall()
+    conn.close()
+
+    return render_template('listar_clientes.html', clientes=clientes)
+
+@app.route('/editar_cliente/<cripta>', methods=['GET', 'POST'])
+def editar_cliente(cripta):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        nombre_titular = request.form['nombre_titular']
+        apellido_paterno = request.form['apellido_paterno']
+        apellido_materno = request.form['apellido_materno']
+        telefono1 = request.form['telefono1']
+        direccion1 = request.form['direccion1']
+        nombre_beneficiario = request.form['nombre_beneficiario']
+        apellido_paterno_beneficiario = request.form['apellido_paterno_beneficiario']
+        apellido_materno_beneficiario = request.form['apellido_materno_beneficiario']
+        telefono_beneficiario = request.form['telefono_beneficiario']
+        direccion_beneficiario = request.form['direccion_beneficiario']
+        nombre_beneficiario2 = request.form['nombre_beneficiario2']
+        apellido_paterno_beneficiario2 = request.form['apellido_paterno_beneficiario2']
+        apellido_materno_beneficiario2 = request.form['apellido_materno_beneficiario2']
+        telefono_beneficiario2 = request.form['telefono_beneficiario2']
+        direccion_beneficiario2 = request.form['direccion_beneficiario2']
+
+        cursor.execute('''
+            UPDATE clientes
+            SET Nombre_titular = ?, Apellido_paterno = ?, Apellido_materno = ?, Telefono1 = ?, Direccion1 = ?,
+                Nombre_Beneficiario = ?, Apellido_paterno_Beneficiario = ?, Apellido_materno_Beneficiario = ?, 
+                Telefono_Beneficiario = ?, Direccion_Beneficiario = ?, Nombre_Beneficiario2 = ?, 
+                Apellido_paterno_Beneficiario2 = ?, Apellido_materno_Beneficiario2 = ?, Telefono_Beneficiario2 = ?, 
+                Direccion_Beneficiario2 = ?
+            WHERE Cripta = ?
+        ''', (nombre_titular, apellido_paterno, apellido_materno, telefono1, direccion1, nombre_beneficiario,
+              apellido_paterno_beneficiario, apellido_materno_beneficiario, telefono_beneficiario, direccion_beneficiario,
+              nombre_beneficiario2, apellido_paterno_beneficiario2, apellido_materno_beneficiario2, telefono_beneficiario2,
+              direccion_beneficiario2, cripta))
+        conn.commit()
+        conn.close()
+
+        flash('Cliente actualizado correctamente', 'info')
+        return redirect(url_for('listar_clientes'))
+
+    cursor.execute('SELECT * FROM clientes WHERE Cripta = ?', (cripta,))
+    cliente = cursor.fetchone()
+    conn.close()
+
+    return render_template('editar_cliente.html', cliente=cliente)
 
 
+@app.route('/eliminar_cliente/<cripta>', methods=['POST'])
+def eliminar_cliente(cripta):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM clientes WHERE Cripta = ?', (cripta,))
+    conn.commit()
+    conn.close()
+
+    flash('Cliente eliminado correctamente', 'info')
+    return redirect(url_for('listar_clientes'))
+#rutas para crud docs 
+@app.route('/documentacion', methods=['GET', 'POST'])
+def listar_documentacion():
+    if request.method == 'POST':
+        cripta = request.form['cripta']
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM Documentacion WHERE Cripta = ?', (cripta,))
+        documentos = cursor.fetchall()
+        conn.close()
+        return render_template('listar_documentacion.html', documentos=documentos)
+    return render_template('listar_documentacion.html', documentos=None)
+
+
+@app.route('/editar_documentacion/<cripta>', methods=['GET', 'POST'])
+def editar_documentacion(cripta):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    if request.method == 'POST':
+        tipo_documento = request.form['tipo_documento']
+        observaciones = request.form['observaciones']
+        documento = request.files.get('documento')
+        filename = None
+        if documento:
+            filename = secure_filename(documento.filename)
+            upload_folder = os.path.join(app.root_path, 'static', 'uploads')
+            if not os.path.exists(upload_folder):
+                os.makedirs(upload_folder)
+            path_to_save = os.path.join(upload_folder, filename)
+            documento.save(path_to_save)
+        cursor.execute('''
+            UPDATE Documentacion
+            SET Tipo_documento = ?, Observaciones = ?, Documento = ?
+            WHERE Cripta = ? AND ID_documentacion = ?
+        ''', (tipo_documento, observaciones, filename if filename else '', cripta, request.form['id_documentacion']))
+        conn.commit()
+        conn.close()
+        flash('Documentación actualizada correctamente', 'info')
+        return redirect(url_for('listar_documentacion'))
+    cursor.execute('SELECT * FROM Documentacion WHERE Cripta = ?', (cripta,))
+    doc = cursor.fetchone()
+    conn.close()
+    return render_template('editar_documentacion.html', doc=doc)
+
+
+@app.route('/eliminar_documentacion/<cripta>/<int:id_documentacion>', methods=['POST'])
+def eliminar_documentacion(cripta, id_documentacion):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Obtener el nombre del archivo a partir de la base de datos
+    cursor.execute('SELECT Documento FROM Documentacion WHERE Cripta = ? AND ID_documentacion = ?', (cripta, id_documentacion))
+    documento = cursor.fetchone()
+    
+    if documento:
+        nombre_archivo = documento['Documento']
+        
+        # Eliminar el registro de la base de datos
+        cursor.execute('DELETE FROM Documentacion WHERE Cripta = ? AND ID_documentacion = ?', (cripta, id_documentacion))
+        conn.commit()
+        
+        # Eliminar el archivo físico
+        if nombre_archivo:
+            path_archivo = os.path.join(app.root_path, 'static', 'uploads', nombre_archivo)
+            if os.path.exists(path_archivo):
+                os.remove(path_archivo)
+    
+    conn.close()
+    flash('Documentación eliminada correctamente', 'info')
+    return redirect(url_for('listar_documentacion'))
+
+@app.route('/pagos', methods=['GET', 'POST'])
+def listar_pagos():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        cripta = request.form['cripta']
+        cursor.execute('SELECT * FROM Pagos WHERE Cripta = ?', (cripta,))
+    else:
+        cursor.execute('SELECT * FROM Pagos')
+
+    pagos = cursor.fetchall()
+    conn.close()
+
+    return render_template('listar_pagos.html', pagos=pagos)
+
+@app.route('/editar_pago/<int:folio>', methods=['GET', 'POST'])
+def editar_pago(folio):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        cripta = request.form['cripta']
+        saldo = float(request.form['saldo'])
+        abono = float(request.form['abono'])
+        saldo_total = saldo - abono
+        fecha_pago = request.form['fecha_pago']
+        notas = request.form['notas']
+
+        cursor.execute('''
+            UPDATE pagos
+            SET Cripta = ?, Saldo = ?, Abono = ?, Saldo_total = ?, Fecha_pago = ?, Notas = ?
+            WHERE Folio = ?
+        ''', (cripta, saldo, abono, saldo_total, fecha_pago, notas, folio))
+        conn.commit()
+        conn.close()
+
+        flash('Pago actualizado correctamente', 'info')
+        return redirect(url_for('listar_pagos'))
+
+    cursor.execute('SELECT * FROM pagos WHERE Folio = ?', (folio,))
+    pago = cursor.fetchone()
+    conn.close()
+
+    return render_template('editar_pago.html', pago=pago)
+
+@app.route('/eliminar_pago/<int:folio>', methods=['POST'])
+def eliminar_pago(folio):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM pagos WHERE Folio = ?', (folio,))
+    conn.commit()
+    conn.close()
+
+    flash('Pago eliminado correctamente', 'info')
+    return redirect(url_for('listar_pagos'))
 
 
 if __name__ == '__main__':
-     app.run(host='192.168.0.194', port=5000, debug=True)
+     app.run(host='192.168.56.1', port=5000, debug=True)

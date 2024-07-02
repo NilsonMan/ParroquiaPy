@@ -98,7 +98,8 @@ cursor.execute('''
 CREATE TABLE IF NOT EXISTS ConfiguracionPagos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     monto_mantenimiento REAL,
-    fecha_inicio DATE
+    fecha_inicio DATE,
+    hora_inicio TEXT
 )
 ''')
 #cursor.execute('DROP TABLE IF EXISTS Configuracionpagos')
@@ -109,7 +110,24 @@ cursor.execute('''
         )
     ''')
 
+cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Documentos (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            Nombre TEXT NOT NULL,
+            Tipo TEXT NOT NULL,
+            Archivo BLOB NOT NULL,
+            Fecha_subida TEXT,
+            Observaciones TEXT
+        )
+    ''')
 #cursor.execute('DROP TABLE IF EXISTS Criptas')
+
+#cursor.execute('DROP TABLE IF EXISTS CobrosMantenimiento')
+
+
+
+#cursor.execute('DROP TABLE IF EXISTS CobrosMantenimiento')
+
 # Confirmar cambios y cerrar la conexión
 conexion.commit()
 conexion.close()

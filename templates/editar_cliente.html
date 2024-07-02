@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Cliente</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles_v2.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Editar Cliente</h1>
+        <nav>
+            <ul class="navbar">
+                <li><a href="{{ url_for('menu') }}">Inicio</a></li>
+                {% if session['role'] == 'admin' %}
+                <li><a href="{{ url_for('create_user') }}">Crear Usuario</a></li>
+                <li><a href="{{ url_for('change_password') }}">Cambiar Contraseña</a></li>
+                <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
+                <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
+                <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
+                <li><a href="{{ url_for('listar_clientes') }}">Listar Clientes</a></li>
+                <li><a href="{{ url_for('listar_documentacion') }}">Listar Documentación</a></li>
+                <li><a href="{{ url_for('listar_pagos') }}">Listar Pagos</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
+                <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
+                <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
+                <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+        <form method="post">
+            <label>Nombre Titular:</label>
+            <input type="text" name="nombre_titular" value="{{ cliente.Nombre_titular }}">
+            <label>Apellido Paterno:</label>
+            <input type="text" name="apellido_paterno" value="{{ cliente.Apellido_paterno }}">
+            <label>Apellido Materno:</label>
+            <input type="text" name="apellido_materno" value="{{ cliente.Apellido_materno }}">
+            <label>Telefono:</label>
+            <input type="text" name="telefono1" value="{{ cliente.Telefono1 }}">
+            <label>Dirección:</label>
+            <input type="text" name="direccion1" value="{{ cliente.Direccion1 }}">
+            <label>Nombre Beneficiario:</label>
+            <input type="text" name="nombre_beneficiario" value="{{ cliente.Nombre_Beneficiario }}">
+            <label>Apellido Paterno Beneficiario:</label>
+            <input type="text" name="apellido_paterno_beneficiario" value="{{ cliente.Apellido_paterno_Beneficiario }}">
+            <label>Apellido Materno Beneficiario:</label>
+            <input type="text" name="apellido_materno_beneficiario" value="{{ cliente.Apellido_materno_Beneficiario }}">
+            <label>Telefono Beneficiario:</label>
+            <input type="text" name="telefono_beneficiario" value="{{ cliente.Telefono_Beneficiario }}">
+            <label>Dirección Beneficiario:</label>
+            <input type="text" name="direccion_beneficiario" value="{{ cliente.Direccion_Beneficiario }}">
+            <label>Nombre Beneficiario 2:</label>
+            <input type="text" name="nombre_beneficiario2" value="{{ cliente.Nombre_Beneficiario2 }}">
+            <label>Apellido Paterno Beneficiario 2:</label>
+            <input type="text" name="apellido_paterno_beneficiario2" value="{{ cliente.Apellido_paterno_Beneficiario2 }}">
+            <label>Apellido Materno Beneficiario 2:</label>
+            <input type="text" name="apellido_materno_beneficiario2" value="{{ cliente.Apellido_materno_Beneficiario2 }}">
+            <label>Telefono Beneficiario 2:</label>
+            <input type="text" name="telefono_beneficiario2" value="{{ cliente.Telefono_Beneficiario2 }}">
+            <label>Dirección Beneficiario 2:</label>
+            <input type="text" name="direccion_beneficiario2" value="{{ cliente.Direccion_Beneficiario2 }}">
+            <button type="submit">Guardar Cambios</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -8,7 +8,9 @@
 </head>
 <body>
     <header>
-        <h1>Administración de Criptas</h1>
+        <div class="container">
+            <h1>Administración de Criptas</h1>
+        </div>
         {% if 'username' in session %}
         <nav>
             <ul class="navbar">
@@ -19,6 +21,9 @@
                 <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
                 <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
                 <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
+                <li><a href="{{ url_for('listar_clientes') }}">Listar Clientes</a></li>
+                <li><a href="{{ url_for('listar_documentacion') }}">Listar Documentación</a></li>
+                <li><a href="{{ url_for('listar_pagos') }}">Listar Pagos</a></li>
                 {% endif %}
                 <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
                 <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>

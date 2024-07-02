@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retiro de Cenizas</title>
+    <title>Subir y Gestionar Documentos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <header>
-        <h1>Retiro de Cenizas</h1>
+        <div class="container">
+            <h1>Subir y Gestionar Documentos</h1>
+        </div>
         {% if 'username' in session %}
         <nav>
             <ul class="navbar">
@@ -32,52 +34,45 @@
         </nav>
         {% endif %}
     </header>
-
     <main>
-        <div class="change-password-container">
-            <h2>Retirar Cenizas</h2>
-            <form method="post">
-                <div class="form-group">
-                    <label for="cripta">Cripta:</label>
-                    <input type="text" id="cripta" name="cripta" required>
-                </div>
-                <div class="form-group">
-                    <button type="submit">Retirar</button>
-                </div>
-            </form>
+        <!-- Formulario para subir documentos -->
+        <form action="{{ url_for('upload_document') }}" method="post" enctype="multipart/form-data">
+            <label for="file">Selecciona un archivo:</label>
+            <input type="file" name="file" id="file" required>
+            <label for="tipo">Tipo de Documento:</label>
+            <input type="text" name="tipo" id="tipo" required>
+            <label for="observaciones">Observaciones:</label>
+            <textarea name="observaciones" id="observaciones"></textarea>
+            <button type="submit">Subir Archivo</button>
+        </form>
 
-            <div class="flashes">
-                {% with messages = get_flashed_messages(with_categories=True) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-                {% endwith %}
-            </div>
-        </div>
-
-        <h2>Difuntos en Criptas</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre Completo</th>
-                    <th>Cripta</th>
-                    <th>Fecha de Defunción</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for difunto in difuntos %}
-                <tr>
-                    <td>{{ difunto['ID_difunto'] }}</td>
-                    <td>{{ difunto['Nombre_completo'] }}</td>
-                    <td>{{ difunto['Cripta'] }}</td>
-                    <td>{{ difunto['Fecha_defuncion'] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+       <!-- Listado de documentos subidos -->
+<h2>Listado de Documentos Subidos</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre del Documento</th>
+            <th>Tipo</th>
+            <th>Observaciones</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for documento in documentos %}
+        <tr>
+            <td>{{ documento['ID'] }}</td>
+            <td>{{ documento['Nombre'] }}</td>
+            <td>{{ documento['Tipo'] }}</td>
+            <td>{{ documento['Observaciones'] }}</td>
+            <td>
+                <a href="{{ url_for('download_document', id=documento['ID']) }}">Descargar</a>
+                <a href="{{ url_for('delete_document', id=documento['ID']) }}">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
     </main>
 </body>
 </html>

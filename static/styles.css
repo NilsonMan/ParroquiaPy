@@ -1,12 +1,71 @@
 
 /* Estilos para el menú principal */
-.menu-container {
-    text-align: center;
-    margin-top: 50px;
-    background-color: rgba(255, 255, 255, 0.7); /* Fondo blanco transparente */
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
     background-image: url('/static/assets/logo.jpg'); /* Ruta relativa a la raíz del servidor */
-    background-size: cover; /* Ajusta el tamaño de la imagen para cubrir el contenedor */
-    background-position: center; /* Centra la imagen */
+    background-size: cover; /* Ajusta el tamaño de la imagen para cubrir todo el body */
+    background-position: top; /* Centra la imagen */
+    position: sticky; /* Fija la imagen de fondo para que no se mueva con el contenido */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1; /* Coloca la imagen detrás de todo el contenido */
+}
+.container {
+    text-align: center; /* Alinea el contenido al centro */
+    background-color: rgba(0, 0, 0, 0.5); /* Color de fondo semi-transparente */
+    padding: 20px; /* Añade espaciado alrededor del contenido */
+    border-radius: 8px; /* Añade bordes redondeados al contenedor */
+}
+input[type="text"],
+input[type="search"],
+input[type="password"],
+input[type="role"],
+input[type="number"],  
+select {
+    background-color: #f0f0f071 !important;  /* Cambia el color de fondo */
+    color: #333 !important;                /* Cambia el color del texto */
+    border: 1px solid #cccccc4b !important;     /* Cambia el color del borde */
+    padding: 10px !important;              /* Añade un poco de espacio interior */
+    font-size: 16px !important;            /* Cambia el tamaño del texto */
+}
+
+input[type="text"]:focus
+select:focus  {
+    background-color: #e0e0e056;  /* Color de fondo cuando está enfocado */
+    border-color: #999;         /* Color del borde cuando está enfocado */
+}
+
+h1 {
+    display: inline-block; /* Ajusta automáticamente al tamaño del texto */
+    text-align: center;
+    color: rgb(5, 5, 5); /* Color del texto */
+    background-color: rgba(241, 235, 235, 0.493); /* Fondo semi-transparente */
+    padding: 20px;
+    border-radius: 8px;
+    width: fit-content; /* Ajusta el ancho al tamaño del contenido */
+    margin: auto; 
+}
+
+/* Estilos para el contenido */
+.content {
+    /* Añade estilos para el contenido si es necesario */
+    text-align: center;
+    color: white; /* Por ejemplo, para asegurar que el texto sea legible */
+    /* Asegúrate de que el contenido esté visible y no se vea afectado por la imagen de fondo */
+}
+
+.menu-container {
+    position: relative;
+    height: 100vh; /* Ocupa toda la altura de la pantalla */
+    background-color: rgba(255, 255, 255, 0.137); /* Fondo blanco transparente */
+    background-size: auto 100%; /* Ajusta la altura de la imagen y deja el ancho automático */
+    background-position: top center; /* Centra la imagen solo verticalmente */
+    text-align: center;
     padding: 50px 0; /* Añade un padding para separar el contenido del borde */
     /* Puedes ajustar otros estilos según sea necesario */
 }
@@ -43,7 +102,7 @@ nav ul li {
 
 nav ul li a {
     text-decoration: none;
-    color: #fff;
+    color: #ffffff33;
     padding: 10px 20px;
     display: inline-block;
 }
@@ -83,9 +142,9 @@ nav ul li a:hover {
     width: 80%;
     margin: auto;
     padding: 20px;
-    border: 1px solid #ddd;
+    border: 1px solid #dddddd04;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #fffefe07;
     margin-top: 50px;
 }
 
@@ -111,7 +170,7 @@ form input[type="file"] {
 
 form input[type="submit"] {
     background-color: #04AA6D;
-    color: white;
+    color: rgba(255, 255, 255, 0.397);
     border: none;
     padding: 10px 20px;
     text-align: center;
@@ -135,22 +194,22 @@ table {
 
 table th,
 table td {
-    border: 1px solid #ddd;
+    border: 1px solid #dddddd77;
     padding: 8px;
     text-align: left;
 }
 
 table th {
-    background-color: #f2f2f2;
-    color: #333;
+    background-color: #f2f2f242;
+    color: #d6d4d4e1;
 }
 
 table tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: #f2f2f29d;
 }
 
 table tr:hover {
-    background-color: #ddd;
+    background-color: #dddddd69;
 }
 
 /* Estilos para la verificación de documentación */
@@ -160,9 +219,9 @@ h2 {
 }
 
 .verificar-form {
-    background-color: #f9f9f9;
+    background-color: #f9f9f950;
     padding: 20px;
-    border: 1px solid #ddd;
+    border: 1px solid #dddddd59;
     border-radius: 8px;
     margin-top: 20px;
 }
@@ -178,14 +237,14 @@ h2 {
     width: calc(100% - 12px);
     padding: 8px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc6e;
     border-radius: 4px;
     font-size: 16px;
 }
 
 .verificar-form input[type="submit"] {
     background-color: #04AA6D;
-    color: white;
+    color: rgba(255, 255, 255, 0.349);
     border: none;
     padding: 10px 20px;
     text-align: center;
@@ -201,17 +260,22 @@ h2 {
     background-color: #45a049;
 }
 /* Estilos para el login */
+
+
 .login-container {
-    width: 80%;
+    width: 100%;
     margin: auto;
     padding: 20px;
-    border: 1px solid #ddd;
+    border: 1px solid #dddddd1c;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #f9f9f925;
     margin-top: 50px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(216, 214, 214, 0.322);
+    position: relative;
+    min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+    background-size: auto 100%; /* Ajusta la altura de la imagen y deja el ancho automático */
+    background-position: top center; /* Centra la imagen solo verticalmente */
 }
-
 .login-header {
     text-align: center;
     margin-bottom: 20px;
@@ -246,14 +310,14 @@ h2 {
     width: calc(100% - 12px);
     padding: 8px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc57;
     border-radius: 4px;
     font-size: 16px;
 }
 
 .login-form button {
     background-color: #04AA6D;
-    color: white;
+    color: rgba(255, 255, 255, 0.336);
     border: none;
     padding: 10px 20px;
     text-align: center;
@@ -276,8 +340,8 @@ h2 {
 .flashes li {
     margin-bottom: 10px;
     padding: 10px;
-    background-color: #f2f2f2;
-    border: 1px solid #ddd;
+    background-color: #f2f2f241;
+    border: 1px solid #dddddd4b;
     border-radius: 4px;
     color: #333;
 }
@@ -287,9 +351,9 @@ h2 {
     width: 80%;
     margin: auto;
     padding: 20px;
-    border: 1px solid #ddd;
+    border: 1px solid #dddddd46;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #f9f9f93a;
     margin-top: 50px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -321,14 +385,14 @@ h2 {
     width: calc(100% - 12px);
     padding: 8px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc48;
     border-radius: 4px;
     font-size: 16px;
 }
 
 .form-group button {
     background-color: #04AA6D;
-    color: white;
+    color: rgba(255, 255, 255, 0.192);
     border: none;
     padding: 10px 20px;
     text-align: center;
@@ -353,8 +417,8 @@ h2 {
 .flashes li {
     margin-bottom: 10px;
     padding: 10px;
-    background-color: #f2f2f2;
-    border: 1px solid #ddd;
+    background-color: #f2f2f23b;
+    border: 1px solid #dddddd50;
     border-radius: 4px;
     color: #333;
 }
@@ -370,9 +434,9 @@ h2 {
     width: 100%;
     padding: 10px;
     font-size: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc79;
     border-radius: 4px;
-    background-color: #fff;
+    background-color: #ffffff3a;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -400,10 +464,10 @@ h2 {
 .change-password-container {
     width: 80%;
     margin: auto;
-    padding: 20px;
-    border: 1px solid #ddd;
+    padding: 2px;
+    border: 1px solid #dddddd49;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #f9f9f948;
     margin-top: 50px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -437,14 +501,14 @@ h2 {
     width: calc(100% - 16px);
     padding: 8px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc34;
     border-radius: 4px;
     font-size: 16px;
 }
 
 .form-group button {
     background-color: #04AA6D;
-    color: white;
+    color: rgba(255, 255, 255, 0.342);
     border: none;
     padding: 10px 20px;
     text-align: center;
@@ -470,8 +534,8 @@ h2 {
 .flashes li {
     margin-bottom: 10px;
     padding: 10px;
-    background-color: #f2f2f2;
-    border: 1px solid #ddd;
+    background-color: #f2f2f248;
+    border: 1px solid #dddddd38;
     border-radius: 4px;
     color: #333;
 }
@@ -500,14 +564,14 @@ form select {
     width: calc(100% - 22px);
     padding: 10px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc5b;
     border-radius: 4px;
     font-size: 16px;
 }
 
 form button {
     background-color: #04AA6D;
-    color: white;
+    color: rgba(255, 255, 255, 0.315);
     border: none;
     padding: 10px 20px;
     font-size: 16px;
@@ -526,17 +590,67 @@ table {
 }
 
 table, th, td {
-    border: 1px solid #ddd;
+    border: 1px solid #dddddd3f;
     padding: 8px;
     text-align: left;
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: #f2f2f234;
 }
 
 tr:hover {
-    background-color: #f5f5f5;
+    background-color: #f5f5f53a;
 }
 
-/*tabla busquda*/
+/* Estilos para las vistas de listar clientes, pagos y documentación */
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f0f0f046;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #cccccc3d;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f25b;
+}
+
+form {
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: rgba(255, 255, 255, 0.24);
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}

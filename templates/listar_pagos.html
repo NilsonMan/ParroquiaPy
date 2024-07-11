@@ -1,69 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Pagos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
-        <div class="container"><h1>Lista de Pagos</h1> </div>
-        
-        <nav>
-            <ul class="navbar">
-                <li><a href="{{ url_for('menu') }}">Inicio</a></li>
-                {% if session['role'] == 'admin' %}
-                <li><a href="{{ url_for('create_user') }}">Crear Usuario</a></li>
-                <li><a href="{{ url_for('change_password') }}">Cambiar Contraseña</a></li>
-                <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
-                <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
-                <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
-                <li><a href="{{ url_for('listar_clientes') }}">Listar Clientes</a></li>
-                <li><a href="{{ url_for('listar_documentacion') }}">Listar Documentación</a></li>
-                <li><a href="{{ url_for('listar_pagos') }}">Listar Pagos</a></li>
-                {% endif %}
-                <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
-                <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
-                <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
-                <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
-            </ul>
-        </nav>
+    <div class="container">
+        <h1>Lista de Pagos</h1>
+    </div>
 
-        <!-- Formulario de búsqueda por cripta -->
-        <form action="{{ url_for('listar_pagos') }}" method="post">
-            <label for="cripta">Buscar por Cripta:</label>
-            <input type="text" id="cripta" name="cripta" required>
-            <button type="submit">Buscar</button>
-        </form>
+    <div class="logo-container">
+        <img src="static/assets/LogoBlanco.jpg" alt="Logo">
+    </div>
 
-        <table>
-            <tr>
-                <th>Cripta</th>
-                <th>Saldo</th>
-                <th>Abono</th>
-                <th>Saldo Total</th>
-                <th>Fecha de Pago</th>
-                <th>Notas</th>
-                <th>Acciones</th>
-            </tr>
-            {% for pago in pagos %}
-            <tr>
-                <td>{{ pago.Cripta }}</td>
-                <td>{{ pago.Saldo }}</td>
-                <td>{{ pago.Abono }}</td>
-                <td>{{ pago.Saldo_total }}</td>
-                <td>{{ pago.Fecha_pago }}</td>
-                <td>{{ pago.Notas }}</td>
-                <td>
-                    <a href="{{ url_for('editar_pago', folio=pago.Folio) }}">Editar</a>
-                    <form action="{{ url_for('eliminar_pago', folio=pago.Folio) }}" method="post" style="display:inline;">
-                        <button type="submit">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    
+    <nav>
+        <ul class="navbar">
+            <li><a href="{{ url_for('menu') }}">Inicio</a></li>
+            {% if session['role'] == 'admin' %}
+            <li><a href="{{ url_for('create_user') }}">Crear Usuario</a></li>
+            <li><a href="{{ url_for('change_password') }}">Cambiar Contraseña</a></li>
+            <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
+            <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
+            <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
+            <li><a href="{{ url_for('listar_clientes') }}">Listar Clientes</a></li>
+            <li><a href="{{ url_for('listar_documentacion') }}">Listar Documentación</a></li>
+            <li><a href="{{ url_for('listar_pagos') }}">Listar Pagos</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
+            <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
+            <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
+            <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Formulario de búsqueda por cripta -->
+    <form action="{{ url_for('listar_pagos') }}" method="post">
+        <label for="cripta">Buscar por Cripta:</label>
+        <input type="text" id="cripta" name="cripta" required>
+        <button type="submit">Buscar</button>
+    </form>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flashes">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+    <table>
+        <tr>
+            <th>Cripta</th>
+            <th>Saldo</th>
+            <th>Abono</th>
+            <th>Saldo Total</th>
+            <th>Fecha de Pago</th>
+            <th>Notas</th>
+            <th>Acciones</th>
+        </tr>
+        {% for pago in pagos %}
+        <tr>
+            <td>{{ pago.Cripta }}</td>
+            <td>{{ pago.Saldo }}</td>
+            <td>{{ pago.Abono }}</td>
+            <td>{{ pago.Saldo_total }}</td>
+            <td>{{ pago.Fecha_pago }}</td>
+            <td>{{ pago.Notas }}</td>
+            <td>
+                <a href="{{ url_for('editar_pago', folio=pago.Folio) }}">Editar</a>
+                <form action="{{ url_for('eliminar_pago', folio=pago.Folio) }}" method="post" style="display:inline;">
+                    <button type="submit">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
 </body>
+
 </html>

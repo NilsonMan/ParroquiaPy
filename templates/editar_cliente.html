@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Editar Cliente</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles_v2.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
@@ -28,38 +28,79 @@
             </ul>
         </nav>
         <form method="post">
-            <label>Nombre Titular:</label>
-            <input type="text" name="nombre_titular" value="{{ cliente.Nombre_titular }}">
-            <label>Apellido Paterno:</label>
-            <input type="text" name="apellido_paterno" value="{{ cliente.Apellido_paterno }}">
-            <label>Apellido Materno:</label>
-            <input type="text" name="apellido_materno" value="{{ cliente.Apellido_materno }}">
-            <label>Telefono:</label>
-            <input type="text" name="telefono1" value="{{ cliente.Telefono1 }}">
-            <label>Dirección:</label>
-            <input type="text" name="direccion1" value="{{ cliente.Direccion1 }}">
-            <label>Nombre Beneficiario:</label>
-            <input type="text" name="nombre_beneficiario" value="{{ cliente.Nombre_Beneficiario }}">
-            <label>Apellido Paterno Beneficiario:</label>
-            <input type="text" name="apellido_paterno_beneficiario" value="{{ cliente.Apellido_paterno_Beneficiario }}">
-            <label>Apellido Materno Beneficiario:</label>
-            <input type="text" name="apellido_materno_beneficiario" value="{{ cliente.Apellido_materno_Beneficiario }}">
-            <label>Telefono Beneficiario:</label>
-            <input type="text" name="telefono_beneficiario" value="{{ cliente.Telefono_Beneficiario }}">
-            <label>Dirección Beneficiario:</label>
-            <input type="text" name="direccion_beneficiario" value="{{ cliente.Direccion_Beneficiario }}">
-            <label>Nombre Beneficiario 2:</label>
-            <input type="text" name="nombre_beneficiario2" value="{{ cliente.Nombre_Beneficiario2 }}">
-            <label>Apellido Paterno Beneficiario 2:</label>
-            <input type="text" name="apellido_paterno_beneficiario2" value="{{ cliente.Apellido_paterno_Beneficiario2 }}">
-            <label>Apellido Materno Beneficiario 2:</label>
-            <input type="text" name="apellido_materno_beneficiario2" value="{{ cliente.Apellido_materno_Beneficiario2 }}">
-            <label>Telefono Beneficiario 2:</label>
-            <input type="text" name="telefono_beneficiario2" value="{{ cliente.Telefono_Beneficiario2 }}">
-            <label>Dirección Beneficiario 2:</label>
-            <input type="text" name="direccion_beneficiario2" value="{{ cliente.Direccion_Beneficiario2 }}">
-            <button type="submit">Guardar Cambios</button>
+            <div class="form-group">
+                <label>Nombre Titular:</label>
+                <input type="text" name="nombre_titular" value="{{ cliente.Nombre_titular }}">
+            </div>
+            <div class="form-group">
+                <label>Apellido Paterno:</label>
+                <input type="text" name="apellido_paterno" value="{{ cliente.Apellido_paterno }}">
+            </div>
+            <div class="form-group">
+                <label>Apellido Materno:</label>
+                <input type="text" name="apellido_materno" value="{{ cliente.Apellido_materno }}">
+            </div>
+            <div class="form-group">
+                <label>Telefono:</label>
+                <input type="text" name="telefono1" value="{{ cliente.Telefono1 }}">
+            </div>
+            <div class="form-group">
+                <label>Dirección:</label>
+                <input type="text" name="direccion1" value="{{ cliente.Direccion1 }}">
+            </div>
+            <div class="form-group">
+                <label>Nombre Beneficiario:</label>
+                <input type="text" name="nombre_beneficiario" value="{{ cliente.Nombre_Beneficiario }}">
+            </div>
+            <div class="form-group">
+                <label>Apellido Paterno Beneficiario:</label>
+                <input type="text" name="apellido_paterno_beneficiario" value="{{ cliente.Apellido_paterno_Beneficiario }}">
+            </div>
+            <div class="form-group">
+                <label>Apellido Materno Beneficiario:</label>
+                <input type="text" name="apellido_materno_beneficiario" value="{{ cliente.Apellido_materno_Beneficiario }}">
+            </div>
+            <div class="form-group">
+                <label>Telefono Beneficiario:</label>
+                <input type="text" name="telefono_beneficiario" value="{{ cliente.Telefono_Beneficiario }}">
+            </div>
+            <div class="form-group">
+                <label>Dirección Beneficiario:</label>
+                <input type="text" name="direccion_beneficiario" value="{{ cliente.Direccion_Beneficiario }}">
+            </div>
+            <div class="form-group">
+                <label>Nombre Beneficiario 2:</label>
+                <input type="text" name="nombre_beneficiario2" value="{{ cliente.Nombre_Beneficiario2 }}">
+            </div>
+            <div class="form-group">
+                <label>Apellido Paterno Beneficiario 2:</label>
+                <input type="text" name="apellido_paterno_beneficiario2" value="{{ cliente.Apellido_paterno_Beneficiario2 }}">
+            </div>
+            <div class="form-group">
+                <label>Apellido Materno Beneficiario 2:</label>
+                <input type="text" name="apellido_materno_beneficiario2" value="{{ cliente.Apellido_materno_Beneficiario2 }}">
+            </div>
+            <div class="form-group">
+                <label>Telefono Beneficiario 2:</label>
+                <input type="text" name="telefono_beneficiario2" value="{{ cliente.Telefono_Beneficiario2 }}">
+            </div>
+            <div class="form-group">
+                <label>Dirección Beneficiario 2:</label>
+                <input type="text" name="direccion_beneficiario2" value="{{ cliente.Direccion_Beneficiario2 }}">
+            </div>
+            <div class="form-group">
+                <button type="submit">Guardar Cambios</button>
+            </div>
         </form>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
     </div>
 </body>
 </html>

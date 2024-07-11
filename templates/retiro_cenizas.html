@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Retiro de Cenizas</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
     <header>
         <h1>Retiro de Cenizas</h1>
         {% if 'username' in session %}
+        <div class="logo-container">
+            <img src="static/assets/LogoBlanco.jpg" alt="Logo">
+        </div>
         <nav>
             <ul class="navbar">
                 <li><a href="{{ url_for('menu') }}">Inicio</a></li>
@@ -49,9 +54,9 @@
             <div class="flashes">
                 {% with messages = get_flashed_messages(with_categories=True) %}
                 {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
                 {% endif %}
                 {% endwith %}
             </div>
@@ -80,4 +85,5 @@
         </table>
     </main>
 </body>
+
 </html>

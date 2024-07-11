@@ -372,9 +372,8 @@ def buscar():
 
     return render_template('resultados_busqueda.html', query=query, clientes=clientes, documentos=documentos, difuntos=difuntos, pagos=pagos, retiros=retiros)
 
-
-
     # Obtener los datos del pago actual
+    
     cursor.execute('SELECT * FROM Pagos WHERE Folio = ?', (folio,))
     pagos = cursor.fetchall()
 
@@ -846,4 +845,4 @@ def eliminar_pago(folio):
 
 
 if __name__ == '__main__':
-     app.run(host='192.168.56.1', port=5000, debug=True)
+     app.run()

@@ -1,140 +1,76 @@
-
-/* Estilos para el menú principal */
-
 body {
     margin: 0;
     padding: 0;
     height: 100vh; /* Ocupa toda la altura de la ventana */
-    background-image: url('/static/assets/logo.jpg'); /* Ruta relativa a la raíz del servidor */
-    background-size: cover; /* Ajusta el tamaño de la imagen para cubrir todo el body */
-    background-position: top; /* Centra la imagen */
-    position: sticky; /* Fija la imagen de fondo para que no se mueva con el contenido */
+    background-color: #E6E6FA; /* Color morado pálido de fondo */
+    position: relative; /* Posición relativa para que los elementos absolutos sean relativos a este */
+}
+
+.logo-container {
+    position: absolute; /* Fija el logo */
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1; /* Coloca la imagen detrás de todo el contenido */
-}
-.container {
-    text-align: center; /* Alinea el contenido al centro */
-    background-color: rgba(0, 0, 0, 0.5); /* Color de fondo semi-transparente */
-    padding: 20px; /* Añade espaciado alrededor del contenido */
-    border-radius: 8px; /* Añade bordes redondeados al contenedor */
-}
-input[type="text"],
-input[type="search"],
-input[type="password"],
-input[type="role"],
-input[type="number"],  
-select {
-    background-color: #f0f0f071 !important;  /* Cambia el color de fondo */
-    color: #333 !important;                /* Cambia el color del texto */
-    border: 1px solid #cccccc4b !important;     /* Cambia el color del borde */
-    padding: 10px !important;              /* Añade un poco de espacio interior */
-    font-size: 16px !important;            /* Cambia el tamaño del texto */
+    z-index: 1000; /* Asegúrate de que el logo esté por encima de la navegación */
+    background-color: #ffffff; /* Fondo oscuro para el contenedor del logo */
+    padding: 10px; /* Añade espaciado alrededor del logo */
 }
 
-input[type="text"]:focus
-select:focus  {
-    background-color: #e0e0e056;  /* Color de fondo cuando está enfocado */
-    border-color: #999;         /* Color del borde cuando está enfocado */
+.logo-container img {
+    width: 80px; /* Ajusta el ancho del logo */
+    height: auto; /* El alto se ajusta automáticamente */
+    display: block;
 }
 
-h1 {
-    display: inline-block; /* Ajusta automáticamente al tamaño del texto */
-    text-align: center;
-    color: rgb(5, 5, 5); /* Color del texto */
-    background-color: rgba(241, 235, 235, 0.493); /* Fondo semi-transparente */
-    padding: 20px;
-    border-radius: 8px;
-    width: fit-content; /* Ajusta el ancho al tamaño del contenido */
-    margin: auto; 
-}
-
-/* Estilos para el contenido */
-.content {
-    /* Añade estilos para el contenido si es necesario */
-    text-align: center;
-    color: white; /* Por ejemplo, para asegurar que el texto sea legible */
-    /* Asegúrate de que el contenido esté visible y no se vea afectado por la imagen de fondo */
-}
-
-.menu-container {
-    position: relative;
-    height: 100vh; /* Ocupa toda la altura de la pantalla */
-    background-color: rgba(255, 255, 255, 0.137); /* Fondo blanco transparente */
-    background-size: auto 100%; /* Ajusta la altura de la imagen y deja el ancho automático */
-    background-position: top center; /* Centra la imagen solo verticalmente */
-    text-align: center;
-    padding: 50px 0; /* Añade un padding para separar el contenido del borde */
-    /* Puedes ajustar otros estilos según sea necesario */
-}
-
-.menu-container h1 {
-    font-size: 2.5em;
-    color: #fffefe; /* Texto blanco */
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.menu-container p {
-    font-size: 1.2em;
-    color: #494848c6; /* Texto gris oscuro */
-    margin-bottom: 40px;
-}
-
-/* Estilos para la barra de navegación */
 nav {
-    background-color: #33333321;
+    background-color: #333; /* Fondo oscuro para la navegación */
     overflow: hidden;
+    position: absolute; /* Fija la navegación en la parte superior */
+    width: 100%;
+    top: 120px; /* Ajusta la distancia desde la parte superior */
+    left: 0;
+    z-index: 999; /* Asegúrate de que la navegación esté por debajo del logo */
+    display: flex;
+    justify-content: center; /* Centra los elementos horizontalmente */
+    padding: 0px 0;
 }
 
-nav ul {
+.navbar {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    text-align: center;
+    display: ruby; /* Utiliza flexbox para alinear los elementos horizontalmente */
 }
 
-nav ul li {
-    display: inline;
+.navbar li {
+    margin: 0 10px; /* Añade margen entre los elementos de la lista */
 }
 
-nav ul li a {
+.navbar li a {
     text-decoration: none;
-    color: #ffffff33;
+    color: #ffffff; /* Color blanco para el texto */
     padding: 10px 20px;
     display: inline-block;
 }
 
-nav ul li a:hover {
-    background-color: #55555551;
+.navbar li a:hover {
+    background-color: #555; /* Fondo más oscuro al pasar el ratón */
 }
 
-.navbar {
-    background-color: #3333334f;
-    overflow: hidden;
+@media screen and (max-width: 768px) {
+    .navbar {
+        display: none; /* Oculta la barra de navegación por defecto en pantallas pequeñas */
+        flex-direction: column; /* Organiza los elementos de la barra de navegación en una columna */
+    }
+    .navbar.active {
+        display: flex; /* Muestra la barra de navegación cuando está activa */
+    }
+    .navbar li {
+        width: 100%; /* Asegúrate de que los elementos de la barra de navegación ocupen todo el ancho */
+        text-align: center; /* Centra el texto en los enlaces */
+        margin-bottom: 10px; /* Añade margen inferior entre los elementos */
+    }
 }
 
-.navbar a {
-    float: left;
-    display: block;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px 20px;
-    text-decoration: none;
-    font-size: 17px;
-}
-
-.navbar a:hover {
-    background-color: #ddd;
-    color: black;
-}
-
-.navbar a.active {
-    background-color: #04AA6D;
-    color: white;
-}
 
 /* Estilos para el formulario y la tabla */
 
@@ -170,7 +106,7 @@ form input[type="file"] {
 
 form input[type="submit"] {
     background-color: #04AA6D;
-    color: rgba(255, 255, 255, 0.397);
+    color: rgb(12, 9, 9);
     border: none;
     padding: 10px 20px;
     text-align: center;
@@ -201,7 +137,7 @@ table td {
 
 table th {
     background-color: #f2f2f242;
-    color: #d6d4d4e1;
+    color: #080505e1;
 }
 
 table tr:nth-child(even) {
@@ -508,7 +444,7 @@ h2 {
 
 .form-group button {
     background-color: #04AA6D;
-    color: rgba(255, 255, 255, 0.342);
+    color: rgba(14, 2, 2, 0.988);
     border: none;
     padding: 10px 20px;
     text-align: center;
@@ -545,7 +481,7 @@ h2 {
 form {
     width: 80%;
     margin: auto;
-    padding: 20px;
+    padding: 60px;
     border: 1px solid #dddddd51;
     border-radius: 8px;
     background-color: #f9f9f905;
@@ -571,7 +507,7 @@ form select {
 
 form button {
     background-color: #04AA6D;
-    color: rgba(255, 255, 255, 0.315);
+    color: rgba(3, 1, 1, 0.84);
     border: none;
     padding: 10px 20px;
     font-size: 16px;
@@ -620,8 +556,10 @@ body {
 
 h1 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 85px;
 }
+
+
 
 table {
     width: 100%;
@@ -646,7 +584,7 @@ form {
 button {
     padding: 5px 10px;
     background-color: #4CAF50;
-    color: rgba(255, 255, 255, 0.24);
+    color: rgba(18, 5, 5, 0.822);
     border: none;
     cursor: pointer;
 }

@@ -109,7 +109,7 @@ cursor.execute('''
             Saldo REAL NOT NULL
         )
     ''')
-
+#ursor.execute('DROP TABLE IF EXISTS Criptas')
 cursor.execute('''
         CREATE TABLE IF NOT EXISTS Documentos (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,

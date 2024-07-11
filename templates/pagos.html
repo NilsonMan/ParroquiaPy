@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,116 +8,17 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
         /* Estilos para el contenedor del formulario */
-        .change-password-container {
-            width: 80%;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #dddddd67;
-            border-radius: 8px;
-            background-color: #dddddd67;
-            margin-top: 50px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .change-password-container h2 {
-            font-size: 2.5em;
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .change-password-container form {
-            width: 70%;
-            margin: auto;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="number"],
-        .form-group textarea {
-            width: calc(100% - 12px);
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #dddddd67;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        .form-group button {
-            background-color: #04AA6D;
-            color: rgba(255, 255, 255, 0.253);
-            border: none;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .form-group button:hover {
-            background-color: #45a049;
-        }
-
-        /* Estilos para la tabla de pagos */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #dddddd67;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        /* Estilos para los mensajes flash */
-        .flashes {
-            list-style-type: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        .flashes li {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #dddddd67;
-            border: 1px solid #dddddd67;
-            border-radius: 4px;
-            color: #333;
-        }
-
-        .alert-success {
-            background-color: #dddddd67;
-            color: #155724;
-            border: 1px solid #dddddd67;
-        }
-
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
     </style>
 </head>
+
 <body>
     <header>
         <h1>Gestión de Pagos</h1>
         {% if 'username' in session %}
+
+        <div class="logo-container">
+            <img src="static/assets/LogoBlanco.jpg" alt="Logo"> 
+        </div>
         <nav>
             <ul class="navbar">
                 <li><a href="{{ url_for('menu') }}">Inicio</a></li>
@@ -139,7 +41,7 @@
         </nav>
         {% endif %}
     </header>
-   
+
     <main>
         <div class="change-password-container">
             <h2>Editar Pagos</h2>
@@ -205,4 +107,5 @@
         </table>
     </main>
 </body>
+
 </html>

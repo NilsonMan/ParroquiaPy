@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+}<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -8,11 +8,11 @@
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1>Administración de Criptas</h1>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='assets/LogoBlanco.jpg') }}" alt="Logo">
         </div>
-        {% if 'username' in session %}
         <nav>
+            {% block navbar %}
             <ul class="navbar">
                 <li><a href="{{ url_for('menu') }}">Inicio</a></li>
                 {% if session['role'] == 'admin' %}
@@ -31,8 +31,11 @@
                 <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
+            {% endblock %}
         </nav>
-        {% endif %}
+        <div class="container">
+            <h1>Administración de Criptas</h1>
+        </div>
     </header>
     <main>
         {% block content %}{% endblock %}

@@ -123,10 +123,24 @@ cursor.execute('''
 #cursor.execute('DROP TABLE IF EXISTS Criptas')
 
 #cursor.execute('DROP TABLE IF EXISTS CobrosMantenimiento')
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS Checklist (
+    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Cripta TEXT UNIQUE,
+    Identificacion_titular BOOLEAN,
+    Identificacion_beneficiario1 BOOLEAN,
+    Identificacion_beneficiario2 BOOLEAN,
+    Acta_defuncion BOOLEAN,
+    Autorizacion_cremacion BOOLEAN,
+    Acta_traslado_cenizas BOOLEAN,
+    FOREIGN KEY (Cripta) REFERENCES Clientes (Cripta)
+    )
+''')
 
 
 
-#cursor.execute('DROP TABLE IF EXISTS CobrosMantenimiento')
+
+#cursor.execute('DROP TABLE IF EXISTS Checklist')
 
 # Confirmar cambios y cerrar la conexión
 conexion.commit()

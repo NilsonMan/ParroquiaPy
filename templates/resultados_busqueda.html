@@ -1,187 +1,165 @@
 {% extends "base.html" %}
 
-{% block title %}Resultados de Búsqueda{% endblock %}
+{% block title %}Resultados de Búsqueda para "{{ query }}"{% endblock %}
 
 {% block content %}
 <div class="results-container">
-    <h1>Resultados de Búsqueda para "{{ query }}"</h1>
+    <h1 class="text-center">Resultados de Búsqueda para "{{ query }}"</h1>
 
     {% if not clientes and not difuntos and not documentos and not pagos %}
-        <p>No se encontraron resultados.</p>
-    {% else %}
-        {% if clientes %}
-        <h2>Clientes Encontrados</h2>
-        <div class="table-wrapper">
-            <table>
-                <tr>
-                    <th>Cripta</th>
-                    <th>Nombre Titular</th>
-                    <th>Apellido Paterno</th>
-                    <th>Apellido Materno</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>Nombre Beneficiario</th>
-                    <th>Apellido Paterno Beneficiario</th>
-                    <th>Apellido Materno Beneficiario</th>
-                    <th>Teléfono Beneficiario</th>
-                    <th>Dirección Beneficiario</th>
-                    <th>Nombre Beneficiario 2</th>
-                    <th>Apellido Paterno Beneficiario 2</th>
-                    <th>Apellido Materno Beneficiario 2</th>
-                    <th>Teléfono Beneficiario 2</th>
-                    <th>Dirección Beneficiario 2</th>
-                </tr>
-                {% for cliente in clientes %}
-                <tr>
-                    <td>{{ cliente['Cripta'] }}</td>
-                    <td>{{ cliente['Nombre_titular'] }}</td>
-                    <td>{{ cliente['Apellido_paterno'] }}</td>
-                    <td>{{ cliente['Apellido_materno'] }}</td>
-                    <td>{{ cliente['Telefono1'] }}</td>
-                    <td>{{ cliente['Direccion1'] }}</td>
-                    <td>{{ cliente['Nombre_Beneficiario'] }}</td>
-                    <td>{{ cliente['Apellido_paterno_Beneficiario'] }}</td>
-                    <td>{{ cliente['Apellido_materno_Beneficiario'] }}</td>
-                    <td>{{ cliente['Telefono_Beneficiario'] }}</td>
-                    <td>{{ cliente['Direccion_Beneficiario'] }}</td>
-                    <td>{{ cliente['Nombre_Beneficiario2'] }}</td>
-                    <td>{{ cliente['Apellido_paterno_Beneficiario2'] }}</td>
-                    <td>{{ cliente['Apellido_materno_Beneficiario2'] }}</td>
-                    <td>{{ cliente['Telefono_Beneficiario2'] }}</td>
-                    <td>{{ cliente['Direccion_Beneficiario2'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        {% endif %}
-
-        {% if documentos %}
-        <h2>Documentación Asociada</h2>
-        <div class="table-wrapper">
-            <table>
-                <tr>
-                    <th>Cripta</th>
-                    <th>Tipo de Documento</th>
-                    <th>Observaciones</th>
-                    <th>Documento</th>
-                </tr>
-                {% for documento in documentos %}
-                <tr>
-                    <td>{{ documento['Cripta'] }}</td>
-                    <td>{{ documento['Tipo_documento'] }}</td>
-                    <td>{{ documento['Observaciones'] }}</td>
-                    <td>
-                        {% if documento['Documento'] %}
-                        <a href="{{ url_for('download_file', filename=documento['Documento']) }}" download>Descargar Documento</a>
-                        {% else %}
-                        No disponible
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        {% endif %}
-
-        {% if difuntos %}
-        <h2>Difuntos Encontrados</h2>
-        <div class="table-wrapper">
-            <table>
-                <tr>
-                    <th>Nombre Completo</th>
-                    <th>Apellido Paterno</th>
-                    <th>Apellido Materno</th>
-                    <th>Cripta</th>
-                    <th>Fecha de Defunción</th>
-                    <th>Fecha</th>
-                    <th>Fecha de Retiro</th>
-                </tr>
-                {% for difunto in difuntos %}
-                <tr>
-                    <td>{{ difunto['Nombre_completo'] }}</td>
-                    <td>{{ difunto['Apellido_paterno'] }}</td>
-                    <td>{{ difunto['Apellido_materno'] }}</td>
-                    <td>{{ difunto['Cripta'] }}</td>
-                    <td>{{ difunto['Fecha_defuncion'] }}</td>
-                    <td>{{ difunto['Fecha'] }}</td>
-                    <td>{{ difunto['Fecha_Retiro'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        {% endif %}
-
-        {% if pagos %}
-        <h2>Pagos Asociados</h2>
-        {% for cripta, pagos_lista in pagos.items() %}
-        <h3>Cripta: {{ cripta }}</h3>
-        <div class="table-wrapper">
-            <table>
-                <tr>
-                    <th>Folio</th>
-                    <th>Saldo</th>
-                    <th>Abono</th>
-                    <th>Saldo Total</th>
-                    <th>Fecha Pago</th>
-                    <th>Notas</th>
-                </tr>
-                {% for pago in pagos_lista %}
-                <tr>
-                    <td>{{ pago['Folio'] }}</td>
-                    <td>{{ pago['Saldo'] }}</td>
-                    <td>{{ pago['Abono'] }}</td>
-                    <td>{{ pago['Saldo_total'] }}</td>
-                    <td>{{ pago['Fecha_pago'] }}</td>
-                    <td>{{ pago['Notas'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        {% endfor %}
-        {% endif %}
+    <p class="text-center">No se encontraron resultados.</p>
     {% endif %}
-    
+
+    {% if clientes %}
+    <div class="section">
+        <h2>Clientes Encontrados</h2>
+        <ul class="list-group">
+            {% for cliente in clientes %}
+            {% if cliente['Cripta'] == query or cliente['Nombre_titular'] == query %}
+            <li class="list-group-item">
+                <strong>Cripta:</strong> {{ cliente['Cripta'] }}<br>
+                <strong>Nombre Titular:</strong> {{ cliente['Nombre_titular'] }} {{ cliente['Apellido_paterno'] }} {{ cliente['Apellido_materno'] }}<br>
+                <strong>Teléfono:</strong> {{ cliente['Telefono1'] }}<br>
+                <strong>Dirección:</strong> {{ cliente['Direccion1'] }}<br>
+                {% if cliente['Nombre_Beneficiario'] %}
+                <strong>Nombre Beneficiario:</strong> {{ cliente['Nombre_Beneficiario'] }} {{ cliente['Apellido_paterno_Beneficiario'] }} {{ cliente['Apellido_materno_Beneficiario'] }}<br>
+                {% endif %}
+                {% if cliente['Nombre_Beneficiario2'] %}
+                <strong>Nombre Beneficiario 2:</strong> {{ cliente['Nombre_Beneficiario2'] }} {{ cliente['Apellido_paterno_Beneficiario2'] }} {{ cliente['Apellido_materno_Beneficiario2'] }}<br>
+                {% endif %}
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if documentos %}
+    <div class="section">
+        <h2>Documentación Asociada</h2>
+        <ul class="list-group">
+            {% for documento in documentos %}
+            {% if documento['Cripta'] == query %}
+            <li class="list-group-item">
+                <strong>Cripta:</strong> {{ documento['Cripta'] }}<br>
+                <strong>Tipo de Documento:</strong> {{ documento['Tipo_documento'] }}<br>
+                <strong>Observaciones:</strong> {{ documento['Observaciones'] }}<br>
+                {% if documento['Documento'] %}
+                <a href="{{ url_for('download_file', filename=documento['Documento']) }}" class="btn btn-sm btn-primary" download>Descargar Documento</a>
+                {% else %}
+                <span class="badge badge-warning">No disponible</span>
+                {% endif %}
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if difuntos %}
+    <div class="section">
+        <h2>Difuntos Encontrados</h2>
+        <ul class="list-group">
+            {% for difunto in difuntos %}
+            {% if difunto['Cripta'] == query or difunto['Nombre_completo'] == query %}
+            <li class="list-group-item">
+                <strong>Nombre Completo:</strong> {{ difunto['Nombre_completo'] }} {{ difunto['Apellido_paterno'] }} {{ difunto['Apellido_materno'] }}<br>
+                <strong>Cripta:</strong> {{ difunto['Cripta'] }}<br>
+                <strong>Fecha de Defunción:</strong> {{ difunto['Fecha_defuncion'] }}<br>
+                <strong>Fecha:</strong> {{ difunto['Fecha'] }}<br>
+                <strong>Fecha de Retiro:</strong> {{ difunto['Fecha_Retiro'] }}<br>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if pagos %}
+    <div class="section">
+        <h2>Pagos Asociados</h2>
+        <ul class="list-group">
+            {% for cripta, pagos_lista in pagos.items() %}
+            {% if cripta == query %}
+            <li class="list-group-item">
+                <h3>Cripta: {{ cripta }}</h3>
+                <ul class="list-group">
+                    {% for pago in pagos_lista %}
+                    <li class="list-group-item">
+                        <strong>Folio:</strong> {{ pago['Folio'] }}<br>
+                        <strong>Saldo:</strong> {{ pago['Saldo'] }}<br>
+                        <strong>Abono:</strong> {{ pago['Abono'] }}<br>
+                        <strong>Saldo Total:</strong> {{ pago['Saldo_total'] }}<br>
+                        <strong>Fecha Pago:</strong> {{ pago['Fecha_pago'] }}<br>
+                        <strong>Notas:</strong> {{ pago['Notas'] }}<br>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     <!-- Botón para imprimir -->
-    <div style="text-align: center; margin-top: 20px;">
-        <button onclick="imprimirResultados()">Imprimir Resultados</button>
+    <div class="text-center mt-4">
+        <button class="btn btn-primary" onclick="imprimirResultados()">Imprimir Resultados</button>
     </div>
 </div>
-
 
 <script>
     function imprimirResultados() {
         window.print();
     }
-    </script>
-    
-    {% endblock %}
-    
-    {% block styles %}
-    <style>
-    /* Estilos para la tabla */
-    .table-wrapper {
-        overflow-x: auto;
-        max-width: 100%;
+</script>
+
+<style>
+    .results-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .section {
         margin-bottom: 20px;
     }
-    
-    .print-table {
-        width: 100%;
-        table-layout: fixed; /* Fijar el ancho de la tabla para evitar que se expanda más allá del contenedor */
-        border-collapse: collapse;
+
+    .list-group {
+        list-style: none;
+        padding: 0;
     }
-    
-    .print-table th, .print-table td {
+
+    .list-group-item {
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #fff;
         border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-        white-space: nowrap; /* Evitar el corte de texto en las celdas */
-        overflow: hidden; /* Ocultar el contenido que sobresale */
-        text-overflow: ellipsis; /* Mostrar puntos suspensivos (...) cuando el contenido no cabe */
+        border-radius: 4px;
     }
-    
-    .print-table th {
-        background-color: #f2f2f2;
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 8px 20px;
+        cursor: pointer;
     }
-    </style>
-    {% endblock %}
+
+    .btn-primary:hover {
+        background-color: #0069d9;
+    }
+
+    .badge {
+        padding: 5px 10px;
+        border-radius: 10px;
+        background-color: #ffc107;
+        color: #212529;
+    }
+</style>
+
+{% endblock %}

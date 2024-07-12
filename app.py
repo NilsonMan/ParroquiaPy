@@ -844,5 +844,56 @@ def eliminar_pago(folio):
     return redirect(url_for('listar_pagos'))
 
 
+@app.route('/select_cripta')
+def select_cripta():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT Cripta FROM Clientes GROUP BY Cripta ORDER BY Cripta ASC')
+    criptas = cursor.fetchall()
+    conn.close()
+    return render_template('select_cripta.html', criptas=criptas)
+
+
+@app.route('/checklist', methods=['GET', 'POST'])
+def checklist():
+    cripta = request.args.get('cripta')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        # Obtener los valores del formulario
+        identificacion_titular = 'Identificacion_titular' in request.form
+        identificacion_beneficiario1 = 'Identificacion_beneficiario1' in request.form
+        identificacion_beneficiario2 = 'Identificacion_beneficiario2' in request.form
+        acta_defuncion = 'Acta_defuncion' in request.form
+        autorizacion_cremacion = 'Autorizacion_cremacion' in request.form
+        acta_traslado_cenizas = 'Acta_traslado_cenizas' in request.form
+
+        # Actualizar o insertar los datos en la tabla Checklist
+        cursor.execute('''
+            INSERT INTO Checklist (Cripta, Identificacion_titular, Identificacion_beneficiario1, Identificacion_beneficiario2, Acta_defuncion, Autorizacion_cremacion, Acta_traslado_cenizas)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(Cripta) DO UPDATE SET
+                Identificacion_titular=excluded.Identificacion_titular,
+                Identificacion_beneficiario1=excluded.Identificacion_beneficiario1,
+                Identificacion_beneficiario2=excluded.Identificacion_beneficiario2,
+                Acta_defuncion=excluded.Acta_defuncion,
+                Autorizacion_cremacion=excluded.Autorizacion_cremacion,
+                Acta_traslado_cenizas=excluded.Acta_traslado_cenizas
+        ''', (cripta, identificacion_titular, identificacion_beneficiario1, identificacion_beneficiario2, acta_defuncion, autorizacion_cremacion, acta_traslado_cenizas))
+        conn.commit()
+        flash('Checklist actualizado correctamente.')
+        return redirect(url_for('checklist', cripta=cripta))
+
+    # Obtener el estado actual del checklist
+    cursor.execute('SELECT * FROM Checklist WHERE Cripta = ?', (cripta,))
+    checklist = cursor.fetchone()
+    conn.close()
+    return render_template('checklist.html', checklist=checklist, cripta=cripta)
+
+
+
+
+
 if __name__ == '__main__':
      app.run()

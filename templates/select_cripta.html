@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Seleccionar Cripta{% endblock %}
+
+{% block content %}
+<h1>Seleccionar Cripta</h1>
+<form action="{{ url_for('checklist') }}" method="get">
+    <label for="cripta">Seleccione una cripta:</label>
+    <select id="cripta" name="cripta" required>
+        {% for cripta in criptas %}
+            <option value="{{ cripta['Cripta'] }}">{{ cripta['Cripta'] }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Seleccionar</button>
+</form>
+{% endblock %}

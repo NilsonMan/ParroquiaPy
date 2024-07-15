@@ -8,7 +8,7 @@
     
     <p>Rol: {{ role }}</p>
 
-    <div class="search-container" style="width: 80%; margin: auto; padding: 20px; border: 1px solid     #dddddd4d; border-radius: 8px; background-color: #f9f9f95a; margin-top: 50px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    <div class="search-container" style="width: 80%; margin: auto; padding: 20px; border: 1px solid #dddddd4d; border-radius: 8px; background-color: #f9f9f95a; margin-top: 50px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
         <h2 style="font-size: 2.5em; color: #333; text-align: center; margin-bottom: 20px;">Buscar Cliente o Difunto</h2>
         <form action="{{ url_for('buscar') }}" method="get" style="width: 70%; margin: auto;">
             <div class="form-group" style="margin-bottom: 20px;">
@@ -20,5 +20,10 @@
             </div>
         </form>
     </div>
+
+    <!-- Mostrar resultados de búsqueda si existen -->
+    {% if query %}
+    {% include 'resultados_busqueda.html' %}
+    {% endif %}
 </div>
 {% endblock %}

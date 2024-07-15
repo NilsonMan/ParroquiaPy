@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Administración de Criptas{% endblock %}</title>
+        <link rel="stylesheet"
+            href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body>
+        <header>
+            <div class="logo-container">
+                <img
+                    src="{{ url_for('static', filename='assets/LogoBlanco.jpg') }}"
+                    alt="Logo">
+            </div>
+            <nav>
+                {% block navbar %}
+                <ul class="navbar">
+                    <li><a href="{{ url_for('menu') }}">Inicio</a></li>
+                    {% if session['role'] == 'admin' %}
+                    <li><a href="{{ url_for('create_user') }}">Crear
+                            Usuario</a></li>
+                    <li><a href="{{ url_for('change_password') }}">Cambiar
+                            Contraseña</a></li>
+                    <li><a href="{{ url_for('delete_user') }}">Eliminar
+                            Usuario</a></li>
+                    <li><a href="{{ url_for('configurar_pagos') }}">Configurar
+                            Pagos</a></li>
+                    <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar
+                            Pagos</a></li>
+                    <li><a href="{{ url_for('listar_clientes') }}">Listar
+                            Clientes</a></li>
+                    <li><a href="{{ url_for('listar_documentacion') }}">Listar
+                            Documentación</a></li>
+                    <li><a href="{{ url_for('listar_pagos') }}">Listar
+                            Pagos</a></li>
+                    <li><a href="{{ url_for('select_cripta') }}">Asignar
+                            Checklist</a></li>
+                    <li><a href="{{ url_for('agregar_cliente') }}">Agregar
+                            Cliente</a></li>
+                    <li><a href="{{ url_for('agregar_difunto') }}">Agregar
+                            Difunto</a></li>
+                    <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de
+                            Cenizas</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('pagos_cajero') }}">Realizar
+                            cobros</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                </ul>
+                {% endblock %}
+            </nav>
+            <div class="container">
+                <h1>Administración de Criptas</h1>
+            </div>
+        </header>
+
+        <!-- Verificación de documentación -->
+        <h2>Verificación de Documentación</h2>
+        <form action="/verificar_documentacion" method="post"
+            enctype="multipart/form-data">
+            <label for="cripta">CRIPTA:</label>
+            <input type="text" id="cripta" name="cripta" required>
+
+            <label for="tipo_documento">Tipo de Documento:</label>
+            <input type="text" id="tipo_documento" name="tipo_documento"
+                required>
+
+            <label for="documento">Documento:</label>
+            <input type="file" id="documento" name="documento">
+
+            <label for="observaciones">Observaciones:</label>
+            <input type="text" id="observaciones" name="observaciones">
+
+            <input type="submit" value="Subir Documento">
+        </form>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </body>
+</html>

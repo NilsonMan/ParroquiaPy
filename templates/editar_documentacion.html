@@ -29,18 +29,16 @@
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
         </nav>
-        <form method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="id_documentacion" value="{{ doc.ID_documentacion }}">
-            <label for="cripta">Cripta:</label>
-            <input type="text" name="cripta" id="cripta" value="{{ doc.Cripta }}" required readonly>
+        <form action="{{ url_for('editar_documentacion', cripta=documentacion.Cripta, id_documentacion=documentacion.ID_documentacion) }}" method="post" enctype="multipart/form-data">
             <label for="tipo_documento">Tipo de Documento:</label>
-            <input type="text" name="tipo_documento" id="tipo_documento" value="{{ doc.Tipo_documento }}" required>
+            <input type="text" id="tipo_documento" name="tipo_documento" value="{{ documentacion.Tipo_documento }}" required>
             <label for="observaciones">Observaciones:</label>
-            <textarea name="observaciones" id="observaciones">{{ doc.Observaciones }}</textarea>
-            <label for="documento">Documento:</label>
-            <input type="file" name="documento" id="documento">
+            <input type="text" id="observaciones" name="observaciones" value="{{ documentacion.Observaciones }}" required>
+            <input type="file" id="documento" name="documento">
+            <input type="hidden" name="id_documentacion" value="{{ documentacion.ID_documentacion }}">
             <button type="submit">Guardar Cambios</button>
         </form>
+        
     </div>
 </body>
 </html>

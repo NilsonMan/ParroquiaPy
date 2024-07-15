@@ -15,17 +15,24 @@
         <h2>Clientes Encontrados</h2>
         <ul class="list-group">
             {% for cliente in clientes %}
-            {% if cliente['Cripta'] == query or cliente['Nombre_titular'] == query %}
+            {% if cliente.Cripta == query or cliente.Nombre_titular == query %}
             <li class="list-group-item">
-                <strong>Cripta:</strong> {{ cliente['Cripta'] }}<br>
-                <strong>Nombre Titular:</strong> {{ cliente['Nombre_titular'] }} {{ cliente['Apellido_paterno'] }} {{ cliente['Apellido_materno'] }}<br>
-                <strong>Teléfono:</strong> {{ cliente['Telefono1'] }}<br>
-                <strong>Dirección:</strong> {{ cliente['Direccion1'] }}<br>
-                {% if cliente['Nombre_Beneficiario'] %}
-                <strong>Nombre Beneficiario:</strong> {{ cliente['Nombre_Beneficiario'] }} {{ cliente['Apellido_paterno_Beneficiario'] }} {{ cliente['Apellido_materno_Beneficiario'] }}<br>
+                <strong>Cripta:</strong> {{ cliente.Cripta }}<br>
+                <strong>Nombre Titular:</strong> {{ cliente.Nombre_titular }} {{
+                cliente.Apellido_paterno }} {{ cliente.Apellido_materno }}<br>
+                <strong>Teléfono:</strong> {{ cliente.Telefono1 }}<br>
+                <strong>Dirección:</strong> {{ cliente.Direccion1 }}<br>
+                {% if cliente.Nombre_Beneficiario %}
+                <strong>Nombre Beneficiario:</strong> {{
+                cliente.Nombre_Beneficiario }} {{
+                cliente.Apellido_paterno_Beneficiario }} {{
+                cliente.Apellido_materno_Beneficiario }}<br>
                 {% endif %}
-                {% if cliente['Nombre_Beneficiario2'] %}
-                <strong>Nombre Beneficiario 2:</strong> {{ cliente['Nombre_Beneficiario2'] }} {{ cliente['Apellido_paterno_Beneficiario2'] }} {{ cliente['Apellido_materno_Beneficiario2'] }}<br>
+                {% if cliente.Nombre_Beneficiario2 %}
+                <strong>Nombre Beneficiario 2:</strong> {{
+                cliente.Nombre_Beneficiario2 }} {{
+                cliente.Apellido_paterno_Beneficiario2 }} {{
+                cliente.Apellido_materno_Beneficiario2 }}<br>
                 {% endif %}
             </li>
             {% endif %}
@@ -39,13 +46,13 @@
         <h2>Documentación Asociada</h2>
         <ul class="list-group">
             {% for documento in documentos %}
-            {% if documento['Cripta'] == query %}
+            {% if documento.Cripta == query %}
             <li class="list-group-item">
-                <strong>Cripta:</strong> {{ documento['Cripta'] }}<br>
-                <strong>Tipo de Documento:</strong> {{ documento['Tipo_documento'] }}<br>
-                <strong>Observaciones:</strong> {{ documento['Observaciones'] }}<br>
-                {% if documento['Documento'] %}
-                <a href="{{ url_for('download_file', filename=documento['Documento']) }}" class="btn btn-sm btn-primary" download>Descargar Documento</a>
+                <strong>Cripta:</strong> {{ documento.Cripta }}<br>
+                <strong>Tipo de Documento:</strong> {{ documento.Tipo_documento }}<br>
+                <strong>Observaciones:</strong> {{ documento.Observaciones }}<br>
+                {% if documento.Documento %}
+                <a href="{{ url_for('download_file', filename=documento.nombre_archivo) }}" class="btn btn-sm btn-primary" download>Descargar Documento</a>
                 {% else %}
                 <span class="badge badge-warning">No disponible</span>
                 {% endif %}
@@ -61,13 +68,16 @@
         <h2>Difuntos Encontrados</h2>
         <ul class="list-group">
             {% for difunto in difuntos %}
-            {% if difunto['Cripta'] == query or difunto['Nombre_completo'] == query %}
+            {% if difunto.Cripta == query or difunto.Nombre_completo == query %}
             <li class="list-group-item">
-                <strong>Nombre Completo:</strong> {{ difunto['Nombre_completo'] }} {{ difunto['Apellido_paterno'] }} {{ difunto['Apellido_materno'] }}<br>
-                <strong>Cripta:</strong> {{ difunto['Cripta'] }}<br>
-                <strong>Fecha de Defunción:</strong> {{ difunto['Fecha_defuncion'] }}<br>
-                <strong>Fecha:</strong> {{ difunto['Fecha'] }}<br>
-                <strong>Fecha de Retiro:</strong> {{ difunto['Fecha_Retiro'] }}<br>
+                <strong>Nombre Completo:</strong> {{ difunto.Nombre_completo }} {{ difunto.Apellido_paterno }} {{ difunto.Apellido_materno }}<br>
+                <strong>Cripta:</strong> {{ difunto.Cripta }}<br>
+                <strong>Fecha de Defunción:</strong> {{ difunto.Fecha_defuncion }}<br>
+                <strong>Fecha:</strong> {{ difunto.Fecha }}<br>
+                <strong>Fecha de Retiro:</strong> {{ difunto.Fecha_Retiro }}<br>
+                {% if saldos[difunto.Cripta] is not none %}
+                <strong>Saldo Actual:</strong> {{ saldos[difunto.Cripta] }}<br>
+                {% endif %}
             </li>
             {% endif %}
             {% endfor %}
@@ -83,18 +93,36 @@
             {% if cripta == query %}
             <li class="list-group-item">
                 <h3>Cripta: {{ cripta }}</h3>
+                {% if saldos[cripta] is not none %}
+                <p><strong>Saldo Actual:</strong> {{ saldos[cripta] }}</p>
+                {% endif %}
                 <ul class="list-group">
                     {% for pago in pagos_lista %}
                     <li class="list-group-item">
-                        <strong>Folio:</strong> {{ pago['Folio'] }}<br>
-                        <strong>Saldo:</strong> {{ pago['Saldo'] }}<br>
-                        <strong>Abono:</strong> {{ pago['Abono'] }}<br>
-                        <strong>Saldo Total:</strong> {{ pago['Saldo_total'] }}<br>
-                        <strong>Fecha Pago:</strong> {{ pago['Fecha_pago'] }}<br>
-                        <strong>Notas:</strong> {{ pago['Notas'] }}<br>
+                        <strong>Folio:</strong> {{ pago.Folio }}<br>
+                        <strong>Saldo:</strong> {{ pago.Saldo }}<br>
+                        <strong>Abono:</strong> {{ pago.Abono }}<br>
+                        <!-- Mostrar el nuevo saldo total después del pago -->
+                        <strong>Saldo Total:</strong> {{ pago.Saldo_total }}<br>
+                        <!-- Mostrar el nombre del usuario que realizó el cobro -->
+                        <strong>Cobrado por:</strong> {{ pago.usuario.nombre }}<br>
                     </li>
                     {% endfor %}
                 </ul>
+                {% if historico_sumas_saldos[cripta] %}
+                <div class="section">
+                    <h4>Histórico de Cobros</h4>
+                    <ul class="list-group">
+                        {% for historico in historico_sumas_saldos[cripta] %}
+                        <li class="list-group-item">
+                            <strong>Fecha:</strong> {{ historico.Fecha }}<br>
+                            <strong>Motivo:</strong> {{ historico.Motivo }}<br>
+                            <strong>Monto:</strong> {{ historico.Monto }}<br>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
             </li>
             {% endif %}
             {% endfor %}
@@ -102,19 +130,22 @@
     </div>
     {% endif %}
 
-    <!-- Botón para imprimir -->
-    <div class="text-center mt-4">
-        <button class="btn btn-primary" onclick="imprimirResultados()">Imprimir Resultados</button>
-    </div>
+    <h1>Seleccionar Cripta</h1>
+    <form action="{{ url_for('select_cripta') }}" method="post">
+        <label for="cripta">Ingrese el nombre de la cripta:</label>
+        <input type="text" id="cripta" name="cripta" required>
+        <button type="submit">Seleccionar</button>
+    </form>
 </div>
 
-<script>
-    function imprimirResultados() {
-        window.print();
-    }
-</script>
-
 <style>
+    @media print {
+        /* Ocultar la navegación durante la impresión */
+        .navbar {
+            display: none;
+        }
+    }
+
     .results-container {
         max-width: 800px;
         margin: 0 auto;
@@ -148,6 +179,8 @@
         border: none;
         padding: 8px 20px;
         cursor: pointer;
+        text-decoration: none; /* Añadir esto para evitar subrayado en enlaces */
+        display: inline-block; /* Añadir esto para que el botón aparezca correctamente */
     }
 
     .btn-primary:hover {

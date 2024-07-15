@@ -41,7 +41,7 @@
             width: calc(50% - 20px);
             margin: 5px 200px;
             padding: 10px;
-            border: 1px solid #dddddd77;
+            border: 1px solid #0c0b0b;
             border-radius: 4px;
         }
 
@@ -188,24 +188,7 @@
             {% endif %}
             {% endwith %}
         </form>
-        <!-- Verificación de documentación -->
-        <h2>Verificación de Documentación</h2>
-        <form action="/verificar_documentacion" method="post" enctype="multipart/form-data">
-            <label for="cripta">CRIPTA:</label>
-            <input type="text" id="cripta" name="cripta" required>
-
-            <label for="tipo_documento">Tipo de Documento:</label>
-            <input type="text" id="tipo_documento" name="tipo_documento" required>
-
-            <label for="documento">Documento:</label>
-            <input type="file" id="documento" name="documento">
-
-            <label for="observaciones">Observaciones:</label>
-            <input type="text" id="observaciones" name="observaciones">
-
-            <input type="submit" value="Subir Documento">
-        </form>
-
+       
         <!-- Tabla para mostrar los clientes -->
         <div class="overflow-x-auto">
             <table id="tabla-criptas">

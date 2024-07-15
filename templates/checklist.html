@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block title %}Checklist de Documentos{% endblock %}
 
 {% block content %}
@@ -31,6 +30,8 @@
         Acta de traslado de cenizas
     </label><br>
     
+    {% if role == 'admin' %}
     <button type="submit">Guardar</button>
+    {% endif %}
 </form>
 {% endblock %}

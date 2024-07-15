@@ -90,6 +90,16 @@ class Criptas(db.Model):
             cripta_obj.Saldo = nuevo_saldo
             db.session.commit()
 
+class HistoricoSumaSaldos(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    Cripta = db.Column(db.String(50))  # Cambia el tipo según tu modelo de criptas
+    Monto = db.Column(db.Float)
+    Motivo = db.Column(db.String(200))
+    Fecha = db.Column(db.DateTime)
+
+    def __repr__(self):
+        return f'<HistoricoSumaSaldos {self.id}>'
+
     
 if __name__ == '__main__':
     #with app.app_context():
@@ -98,7 +108,7 @@ if __name__ == '__main__':
      # Elimina la tabla Pagos si existe
     with app.app_context():
         # Construye la sentencia DROP TABLE para Pagos
-        drop_statement = text(f"DROP TABLE IF EXISTS {Clientes.__tablename__};")
+        drop_statement = text(f"DROP TABLE IF EXISTS {HistoricoSumaSaldos.__tablename__};")
 
         # Ejecuta la sentencia SQL
         db.session.execute(drop_statement)

@@ -17,13 +17,15 @@
                 <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
                 <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
                 <li><a href="{{ url_for('listar_clientes') }}">Listar Clientes</a></li>
+                <li><a href="{{ url_for('verificar_documentacion')}}">Verificar documentacion</a></li>
                 <li><a href="{{ url_for('listar_documentacion') }}">Listar Documentación</a></li>
                 <li><a href="{{ url_for('listar_pagos') }}">Listar Pagos</a></li>
-                {% endif %}
-                <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
+                <li><a href="{{ url_for('select_cripta') }}">Asignar Checklist</a></li>
                 <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
                 <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
                 <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('pagos_cajero') }}">Realizar cobros</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
         </nav>
@@ -41,12 +43,16 @@
                 <input type="text" name="apellido_materno" value="{{ cliente.Apellido_materno }}">
             </div>
             <div class="form-group">
-                <label>Telefono:</label>
+                <label>Teléfono:</label>
                 <input type="text" name="telefono1" value="{{ cliente.Telefono1 }}">
             </div>
             <div class="form-group">
                 <label>Dirección:</label>
                 <input type="text" name="direccion1" value="{{ cliente.Direccion1 }}">
+            </div>
+            <div class="form-group">
+                <label>Familia:</label>
+                <input type="text" name="familia" value="{{ cliente.Familia }}">
             </div>
             <div class="form-group">
                 <label>Nombre Beneficiario:</label>
@@ -61,7 +67,7 @@
                 <input type="text" name="apellido_materno_beneficiario" value="{{ cliente.Apellido_materno_Beneficiario }}">
             </div>
             <div class="form-group">
-                <label>Telefono Beneficiario:</label>
+                <label>Teléfono Beneficiario:</label>
                 <input type="text" name="telefono_beneficiario" value="{{ cliente.Telefono_Beneficiario }}">
             </div>
             <div class="form-group">
@@ -81,7 +87,7 @@
                 <input type="text" name="apellido_materno_beneficiario2" value="{{ cliente.Apellido_materno_Beneficiario2 }}">
             </div>
             <div class="form-group">
-                <label>Telefono Beneficiario 2:</label>
+                <label>Teléfono Beneficiario 2:</label>
                 <input type="text" name="telefono_beneficiario2" value="{{ cliente.Telefono_Beneficiario2 }}">
             </div>
             <div class="form-group">

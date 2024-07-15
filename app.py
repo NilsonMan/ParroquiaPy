@@ -32,6 +32,7 @@ class Clientes(db.Model):
     Nombre_titular = db.Column(db.TEXT)
     Apellido_paterno = db.Column(db.TEXT)
     Apellido_materno = db.Column(db.TEXT)
+    Familia = db.Column(db.TEXT)  # Nuevo campo para la familia
     Telefono1 = db.Column(db.TEXT)
     Direccion1 = db.Column(db.TEXT)
     Nombre_Beneficiario = db.Column(db.TEXT)
@@ -458,7 +459,6 @@ def delete_user():
     return render_template('delete_user.html', users=usuarios)
 
 
-
 @app.route('/agregar_cliente', methods=['GET', 'POST'])
 def agregar_cliente():
     if 'username' not in session:
@@ -469,6 +469,7 @@ def agregar_cliente():
         nombre_titular = request.form['nombre_titular']
         apellido_paterno = request.form['apellido_paterno']
         apellido_materno = request.form['apellido_materno']
+        familia = request.form['familia']  # Nuevo campo para la familia
         telefono1 = request.form['telefono1']
         direccion1 = request.form['direccion1']
         nombre_beneficiario = request.form['nombre_beneficiario']
@@ -488,9 +489,10 @@ def agregar_cliente():
         if existing_cliente:
             flash('Ya existe un cliente con el mismo valor de cripta', 'error')
         else:
-            # Crea un nuevo objeto Cliente utilizando SQLAlchemy
+            # Crear un nuevo objeto Cliente utilizando SQLAlchemy
             new_cliente = Clientes(Cripta=cripta, Nombre_titular=nombre_titular, Apellido_paterno=apellido_paterno,
-                                   Apellido_materno=apellido_materno, Telefono1=telefono1, Direccion1=direccion1,
+                                   Apellido_materno=apellido_materno, Familia=familia,
+                                   Telefono1=telefono1, Direccion1=direccion1,
                                    Nombre_Beneficiario=nombre_beneficiario,
                                    Apellido_paterno_Beneficiario=apellido_paterno_beneficiario,
                                    Apellido_materno_Beneficiario=apellido_materno_beneficiario,
@@ -500,7 +502,7 @@ def agregar_cliente():
                                    Apellido_materno_Beneficiario2=apellido_materno_beneficiario2,
                                    Telefono_Beneficiario2=telefono_beneficiario2, Direccion_Beneficiario2=direccion_beneficiario2)
             
-            # Agrega el nuevo cliente a la sesión y lo guarda en la base de datos
+            # Agregar el nuevo cliente a la sesión y guardarlo en la base de datos
             db.session.add(new_cliente)
             db.session.commit()
 
@@ -508,9 +510,10 @@ def agregar_cliente():
 
         return redirect(url_for('agregar_cliente'))
 
-    # Obtiene la lista de clientes para mostrar en la plantilla
+    # Obtener la lista de clientes para mostrar en la plantilla
     clientes = Clientes.query.all()
     return render_template('agregar_cliente.html', clientes=clientes)
+
 
 
 
@@ -957,16 +960,22 @@ def listar_clientes():
 
 
 
-
 @app.route('/editar_cliente/<cripta>', methods=['GET', 'POST'])
 def editar_cliente(cripta):
     if 'username' not in session:
         return redirect(url_for('login'))
 
+    cliente = Clientes.query.filter_by(Cripta=cripta).first()
+
+    if not cliente:
+        flash(f'No se encontró el cliente con la cripta {cripta}', 'error')
+        return redirect(url_for('listar_clientes'))
+
     if request.method == 'POST':
         nombre_titular = request.form['nombre_titular']
         apellido_paterno = request.form['apellido_paterno']
         apellido_materno = request.form['apellido_materno']
+        familia = request.form['familia']  # Nuevo campo para la familia
         telefono1 = request.form['telefono1']
         direccion1 = request.form['direccion1']
         nombre_beneficiario = request.form['nombre_beneficiario']
@@ -980,38 +989,32 @@ def editar_cliente(cripta):
         telefono_beneficiario2 = request.form['telefono_beneficiario2']
         direccion_beneficiario2 = request.form['direccion_beneficiario2']
 
-        cliente = Clientes.query.filter_by(Cripta=cripta).first()
-        
-        if cliente:
-            cliente.Nombre_titular = nombre_titular
-            cliente.Apellido_paterno = apellido_paterno
-            cliente.Apellido_materno = apellido_materno
-            cliente.Telefono1 = telefono1
-            cliente.Direccion1 = direccion1
-            cliente.Nombre_Beneficiario = nombre_beneficiario
-            cliente.Apellido_paterno_Beneficiario = apellido_paterno_beneficiario
-            cliente.Apellido_materno_Beneficiario = apellido_materno_beneficiario
-            cliente.Telefono_Beneficiario = telefono_beneficiario
-            cliente.Direccion_Beneficiario = direccion_beneficiario
-            cliente.Nombre_Beneficiario2 = nombre_beneficiario2
-            cliente.Apellido_paterno_Beneficiario2 = apellido_paterno_beneficiario2
-            cliente.Apellido_materno_Beneficiario2 = apellido_materno_beneficiario2
-            cliente.Telefono_Beneficiario2 = telefono_beneficiario2
-            cliente.Direccion_Beneficiario2 = direccion_beneficiario2
+        # Actualizar los campos del cliente existente
+        cliente.Nombre_titular = nombre_titular
+        cliente.Apellido_paterno = apellido_paterno
+        cliente.Apellido_materno = apellido_materno
+        cliente.Familia = familia  # Actualización del campo familia
+        cliente.Telefono1 = telefono1
+        cliente.Direccion1 = direccion1
+        cliente.Nombre_Beneficiario = nombre_beneficiario
+        cliente.Apellido_paterno_Beneficiario = apellido_paterno_beneficiario
+        cliente.Apellido_materno_Beneficiario = apellido_materno_beneficiario
+        cliente.Telefono_Beneficiario = telefono_beneficiario
+        cliente.Direccion_Beneficiario = direccion_beneficiario
+        cliente.Nombre_Beneficiario2 = nombre_beneficiario2
+        cliente.Apellido_paterno_Beneficiario2 = apellido_paterno_beneficiario2
+        cliente.Apellido_materno_Beneficiario2 = apellido_materno_beneficiario2
+        cliente.Telefono_Beneficiario2 = telefono_beneficiario2
+        cliente.Direccion_Beneficiario2 = direccion_beneficiario2
 
-            try:
-                db.session.commit()
-                flash('Cliente actualizado correctamente', 'info')
-                return redirect(url_for('listar_clientes'))
-            except Exception as e:
-                flash(f'Error al actualizar el cliente: {str(e)}', 'error')
-                return redirect(url_for('listar_clientes'))
-
-        else:
-            flash(f'No se encontró el cliente con la cripta {cripta}', 'error')
+        try:
+            db.session.commit()
+            flash('Cliente actualizado correctamente', 'info')
+            return redirect(url_for('listar_clientes'))
+        except Exception as e:
+            flash(f'Error al actualizar el cliente: {str(e)}', 'error')
             return redirect(url_for('listar_clientes'))
 
-    cliente = Clientes.query.filter_by(Cripta=cripta).first()
     return render_template('editar_cliente.html', cliente=cliente)
 
 

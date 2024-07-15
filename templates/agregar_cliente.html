@@ -94,152 +94,156 @@
         }
     </style>
 </head>
-
-<body>
-
-    <header>
-        <h1>Agregar Cliente</h1>
-        {% if 'username' in session %}
-        <div class="logo-container">
-            <img src="static/assets/LogoBlanco.jpg" alt="Logo">
-        </div>
-        <nav>
-            <ul class="navbar">
-                <li><a href="{{ url_for('menu') }}">Inicio</a></li>
-                {% if session['role'] == 'admin' %}
-                <li><a href="{{ url_for('create_user') }}">Crear Usuario</a></li>
-                <li><a href="{{ url_for('change_password') }}">Cambiar Contraseña</a></li>
-                <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
-                <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
-                <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
-                <li><a href="{{ url_for('listar_clientes') }}">Listar Clientes</a></li>
-                <li><a href="{{ url_for('listar_documentacion') }}">Listar Documentación</a></li>
-                <li><a href="{{ url_for('listar_pagos') }}">Listar Pagos</a></li>
-                {% endif %}
-                <li><a href="{{ url_for('pagos_cajero') }}">Gestión de Pagos</a></li>
-                <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
-                <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
-                <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
-            </ul>
-        </nav>
-        {% endif %}
-    </header>
-
-    <div class="container">
-        <!-- Formulario para agregar nuevo cliente -->
-        <form action="/agregar_cliente" method="post">
-            <label for="cripta">CRIPTA:</label>
-            <input type="text" id="cripta" name="cripta" required>
-
-            <label for="nombre_titular">NOMBRE TITULAR:</label>
-            <input type="text" id="nombre_titular" name="nombre_titular" required>
-
-            <label for="apellido_paterno">APELLIDO PATERNO:</label>
-            <input type="text" id="apellido_paterno" name="apellido_paterno" required>
-
-            <label for="apellido_materno">APELLIDO MATERNO:</label>
-            <input type="text" id="apellido_materno" name="apellido_materno" required>
-
-            <label for="telefono1">TELÉFONO:</label>
-            <input type="text" id="telefono1" name="telefono1" required>
-
-            <label for="direccion1">DIRECCIÓN:</label>
-            <input type="text" id="direccion1" name="direccion1" required>
-
-            <label for="nombre_beneficiario">NOMBRE BENEFICIARIO:</label>
-            <input type="text" id="nombre_beneficiario" name="nombre_beneficiario" required>
-
-            <label for="apellido_paterno_beneficiario">APELLIDO PATERNO BENEFICIARIO:</label>
-            <input type="text" id="apellido_paterno_beneficiario" name="apellido_paterno_beneficiario" required>
-
-            <label for="apellido_materno_beneficiario">APELLIDO MATERNO BENEFICIARIO:</label>
-            <input type="text" id="apellido_materno_beneficiario" name="apellido_materno_beneficiario" required>
-
-            <label for="telefono_beneficiario">TELÉFONO BENEFICIARIO:</label>
-            <input type="text" id="telefono_beneficiario" name="telefono_beneficiario" required>
-
-            <label for="direccion_beneficiario">DIRECCIÓN BENEFICIARIO:</label>
-            <input type="text" id="direccion_beneficiario" name="direccion_beneficiario" required>
-
-            <label for="nombre_beneficiario2">NOMBRE BENEFICIARIO 2:</label>
-            <input type="text" id="nombre_beneficiario2" name="nombre_beneficiario2" required>
-
-            <label for="apellido_paterno_beneficiario2">APELLIDO PATERNO BENEFICIARIO 2:</label>
-            <input type="text" id="apellido_paterno_beneficiario2" name="apellido_paterno_beneficiario2" required>
-
-            <label for="apellido_materno_beneficiario2">APELLIDO MATERNO BENEFICIARIO 2:</label>
-            <input type="text" id="apellido_materno_beneficiario2" name="apellido_materno_beneficiario2" required>
-
-            <label for="telefono_beneficiario2">TELÉFONO BENEFICIARIO 2:</label>
-            <input type="text" id="telefono_beneficiario2" name="telefono_beneficiario2" required>
-
-            <label for="direccion_beneficiario2">DIRECCIÓN BENEFICIARIO 2:</label>
-            <input type="text" id="direccion_beneficiario2" name="direccion_beneficiario2" required>
-
-            <input type="submit" value="Agregar Cliente">
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <ul class="flashes">
-                {% for message in messages %}
-                <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            {% endwith %}
-        </form>
-       
-        <!-- Tabla para mostrar los clientes -->
-        <div class="overflow-x-auto">
-            <table id="tabla-criptas">
-                <thead>
-                    <tr>
-                        <th>CRIPTA</th>
-                        <th>NOMBRE TITULAR</th>
-                        <th>APELLIDO PATERNO</th>
-                        <th>APELLIDO MATERNO</th>
-                        <th>TELÉFONO</th>
-                        <th>DIRECCIÓN</th>
-                        <th>NOMBRE BENEFICIARIO</th>
-                        <th>APELLIDO PATERNO BENEFICIARIO</th>
-                        <th>APELLIDO MATERNO BENEFICIARIO</th>
-                        <th>TELÉFONO BENEFICIARIO</th>
-                        <th>DIRECCIÓN BENEFICIARIO</th>
-                        <th>NOMBRE BENEFICIARIO 2</th>
-                        <th>APELLIDO PATERNO BENEFICIARIO 2</th>
-                        <th>APELLIDO MATERNO BENEFICIARIO 2</th>
-                        <th>TELÉFONO BENEFICIARIO 2</th>
-                        <th>DIRECCIÓN BENEFICIARIO 2</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cliente in clientes %}
-                    <tr>
-                        <td>{{ cliente.Cripta }}</td>
-                        <td>{{ cliente.Nombre_titular }}</td>
-                        <td>{{ cliente.Apellido_paterno }}</td>
-                        <td>{{ cliente.Apellido_materno }}</td>
-                        <td>{{ cliente.Telefono1 }}</td>
-                        <td>{{ cliente.Direccion1 }}</td>
-                        <td>{{ cliente.Nombre_Beneficiario }}</td>
-                        <td>{{ cliente.Apellido_paterno_Beneficiario }}</td>
-                        <td>{{ cliente.Apellido_materno_Beneficiario }}</td>
-                        <td>{{ cliente.Telefono_Beneficiario }}</td>
-                        <td>{{ cliente.Direccion_Beneficiario }}</td>
-                        <td>{{ cliente.Nombre_Beneficiario2 }}</td>
-                        <td>{{ cliente.Apellido_paterno_Beneficiario2 }}</td>
-                        <td>{{ cliente.Apellido_materno_Beneficiario2 }}</td>
-                        <td>{{ cliente.Telefono_Beneficiario2 }}</td>
-                        <td>{{ cliente.Direccion_Beneficiario2 }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Verificación de documentación -->
-        
+<header>
+    <h1>Agregar Cliente</h1>
+    {% if 'username' in session %}
+    <div class="logo-container">
+        <img src="static/assets/LogoBlanco.jpg" alt="Logo">
     </div>
+    <nav>
+        {% block navbar %}
+        <ul class="navbar">
+            <li><a href="{{ url_for('menu') }}">Inicio</a></li>
+            {% if session['role'] == 'admin' %}
+            <li><a href="{{ url_for('create_user') }}">Crear Usuario</a></li>
+            <li><a href="{{ url_for('change_password') }}">Cambiar Contraseña</a></li>
+            <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
+            <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
+            <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
+            <li><a href="{{ url_for('listar_clientes') }}">Listar Clientes</a></li>
+            <li><a href="{{ url_for('verificar_documentacion')}}">Verificar documentacion</a></li>
+            <li><a href="{{ url_for('listar_documentacion') }}">Listar Documentación</a></li>
+            <li><a href="{{ url_for('listar_pagos') }}">Listar Pagos</a></li>
+            <li><a href="{{ url_for('select_cripta') }}">Asignar Checklist</a></li>
+            <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
+            <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
+            <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('pagos_cajero') }}">Realizar cobros</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+         </ul>
+        {% endblock %}
+    </nav>
+    {% endif %}
+</header>
+
+<div class="container">
+    <!-- Formulario para agregar nuevo cliente -->
+    <form action="/agregar_cliente" method="post">
+        <label for="cripta">CRIPTA:</label>
+        <input type="text" id="cripta" name="cripta" required>
+
+        <label for="nombre_titular">NOMBRE TITULAR:</label>
+        <input type="text" id="nombre_titular" name="nombre_titular" required>
+
+        <label for="apellido_paterno">APELLIDO PATERNO:</label>
+        <input type="text" id="apellido_paterno" name="apellido_paterno" required>
+
+        <label for="apellido_materno">APELLIDO MATERNO:</label>
+        <input type="text" id="apellido_materno" name="apellido_materno" required>
+
+       <!-- Nuevo campo para la familia -->
+       <label for="familia">FAMILIA:</label>
+       <input type="text" id="familia" name="familia" required>
+   
+       <label for="telefono1">TELÉFONO:</label>
+        <input type="text" id="telefono1" name="telefono1" required>
+
+        <label for="direccion1">DIRECCIÓN:</label>
+        <input type="text" id="direccion1" name="direccion1" required>
+
+        <label for="nombre_beneficiario">NOMBRE BENEFICIARIO:</label>
+        <input type="text" id="nombre_beneficiario" name="nombre_beneficiario" required>
+
+        <label for="apellido_paterno_beneficiario">APELLIDO PATERNO BENEFICIARIO:</label>
+        <input type="text" id="apellido_paterno_beneficiario" name="apellido_paterno_beneficiario" required>
+
+        <label for="apellido_materno_beneficiario">APELLIDO MATERNO BENEFICIARIO:</label>
+        <input type="text" id="apellido_materno_beneficiario" name="apellido_materno_beneficiario" required>
+
+        <label for="telefono_beneficiario">TELÉFONO BENEFICIARIO:</label>
+        <input type="text" id="telefono_beneficiario" name="telefono_beneficiario" required>
+
+        <label for="direccion_beneficiario">DIRECCIÓN BENEFICIARIO:</label>
+        <input type="text" id="direccion_beneficiario" name="direccion_beneficiario" required>
+
+        <label for="nombre_beneficiario2">NOMBRE BENEFICIARIO 2:</label>
+        <input type="text" id="nombre_beneficiario2" name="nombre_beneficiario2" required>
+
+        <label for="apellido_paterno_beneficiario2">APELLIDO PATERNO BENEFICIARIO 2:</label>
+        <input type="text" id="apellido_paterno_beneficiario2" name="apellido_paterno_beneficiario2" required>
+
+        <label for="apellido_materno_beneficiario2">APELLIDO MATERNO BENEFICIARIO 2:</label>
+        <input type="text" id="apellido_materno_beneficiario2" name="apellido_materno_beneficiario2" required>
+
+        <label for="telefono_beneficiario2">TELÉFONO BENEFICIARIO 2:</label>
+        <input type="text" id="telefono_beneficiario2" name="telefono_beneficiario2" required>
+
+        <label for="direccion_beneficiario2">DIRECCIÓN BENEFICIARIO 2:</label>
+        <input type="text" id="direccion_beneficiario2" name="direccion_beneficiario2" required>
+
+        
+
+        <input type="submit" value="Agregar Cliente">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </form>
+   
+    <!-- Tabla para mostrar los clientes -->
+    <div class="overflow-x-auto">
+        <table id="tabla-criptas">
+            <thead>
+                <tr>
+                    <th>CRIPTA</th>
+                    <th>NOMBRE TITULAR</th>
+                    <th>APELLIDO PATERNO</th>
+                    <th>APELLIDO MATERNO</th>
+                    <th>TELÉFONO</th>
+                    <th>DIRECCIÓN</th>
+                    <th>NOMBRE BENEFICIARIO</th>
+                    <th>APELLIDO PATERNO BENEFICIARIO</th>
+                    <th>APELLIDO MATERNO BENEFICIARIO</th>
+                    <th>TELÉFONO BENEFICIARIO</th>
+                    <th>DIRECCIÓN BENEFICIARIO</th>
+                    <th>NOMBRE BENEFICIARIO 2</th>
+                    <th>APELLIDO PATERNO BENEFICIARIO 2</th>
+                    <th>APELLIDO MATERNO BENEFICIARIO 2</th>
+                    <th>TELÉFONO BENEFICIARIO 2</th>
+                    <th>DIRECCIÓN BENEFICIARIO 2</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente.Cripta }}</td>
+                    <td>{{ cliente.Nombre_titular }}</td>
+                    <td>{{ cliente.Apellido_paterno }}</td>
+                    <td>{{ cliente.Apellido_materno }}</td>
+                    <td>{{ cliente.Telefono1 }}</td>
+                    <td>{{ cliente.Direccion1 }}</td>
+                    <td>{{ cliente.Nombre_Beneficiario }}</td>
+                    <td>{{ cliente.Apellido_paterno_Beneficiario }}</td>
+                    <td>{{ cliente.Apellido_materno_Beneficiario }}</td>
+                    <td>{{ cliente.Telefono_Beneficiario }}</td>
+                    <td>{{ cliente.Direccion_Beneficiario }}</td>
+                    <td>{{ cliente.Nombre_Beneficiario2 }}</td>
+                    <td>{{ cliente.Apellido_paterno_Beneficiario2 }}</td>
+                    <td>{{ cliente.Apellido_materno_Beneficiario2 }}</td>
+                    <td>{{ cliente.Telefono_Beneficiario2 }}</td>
+                    <td>{{ cliente.Direccion_Beneficiario2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 </body>
 

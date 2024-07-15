@@ -18,6 +18,7 @@ class Clientes(db.Model):
     Nombre_titular = db.Column(db.TEXT)
     Apellido_paterno = db.Column(db.TEXT)
     Apellido_materno = db.Column(db.TEXT)
+    Familia = db.Column(db.TEXT)  # Nuevo campo para la familia
     Telefono1 = db.Column(db.TEXT)
     Direccion1 = db.Column(db.TEXT)
     Nombre_Beneficiario = db.Column(db.TEXT)
@@ -97,7 +98,7 @@ if __name__ == '__main__':
      # Elimina la tabla Pagos si existe
     with app.app_context():
         # Construye la sentencia DROP TABLE para Pagos
-        drop_statement = text(f"DROP TABLE IF EXISTS {Criptas.__tablename__};")
+        drop_statement = text(f"DROP TABLE IF EXISTS {Clientes.__tablename__};")
 
         # Ejecuta la sentencia SQL
         db.session.execute(drop_statement)

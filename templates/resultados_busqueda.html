@@ -18,21 +18,19 @@
             {% if cliente.Cripta == query or cliente.Nombre_titular == query %}
             <li class="list-group-item">
                 <strong>Cripta:</strong> {{ cliente.Cripta }}<br>
-                <strong>Nombre Titular:</strong> {{ cliente.Nombre_titular }} {{
-                cliente.Apellido_paterno }} {{ cliente.Apellido_materno }}<br>
+                <strong>Nombre Titular:</strong> {{ cliente.Nombre_titular }} {{ cliente.Apellido_paterno }} {{ cliente.Apellido_materno }}<br>
                 <strong>Teléfono:</strong> {{ cliente.Telefono1 }}<br>
                 <strong>Dirección:</strong> {{ cliente.Direccion1 }}<br>
+                <strong>Familia:</strong> {{ cliente.Familia }}<br> {# Nuevo campo familia agregado #}
                 {% if cliente.Nombre_Beneficiario %}
-                <strong>Nombre Beneficiario:</strong> {{
-                cliente.Nombre_Beneficiario }} {{
-                cliente.Apellido_paterno_Beneficiario }} {{
-                cliente.Apellido_materno_Beneficiario }}<br>
+                <strong>Nombre Beneficiario:</strong> {{ cliente.Nombre_Beneficiario }} {{ cliente.Apellido_paterno_Beneficiario }} {{ cliente.Apellido_materno_Beneficiario }}<br>
+                <strong>Teléfono Beneficiario:</strong> {{ cliente.Telefono_Beneficiario }}<br>
+                <strong>Dirección Beneficiario:</strong> {{ cliente.Direccion_Beneficiario }}<br>
                 {% endif %}
                 {% if cliente.Nombre_Beneficiario2 %}
-                <strong>Nombre Beneficiario 2:</strong> {{
-                cliente.Nombre_Beneficiario2 }} {{
-                cliente.Apellido_paterno_Beneficiario2 }} {{
-                cliente.Apellido_materno_Beneficiario2 }}<br>
+                <strong>Nombre Beneficiario 2:</strong> {{ cliente.Nombre_Beneficiario2 }} {{ cliente.Apellido_paterno_Beneficiario2 }} {{ cliente.Apellido_materno_Beneficiario2 }}<br>
+                <strong>Teléfono Beneficiario 2:</strong> {{ cliente.Telefono_Beneficiario2 }}<br>
+                <strong>Dirección Beneficiario 2:</strong> {{ cliente.Direccion_Beneficiario2 }}<br>
                 {% endif %}
             </li>
             {% endif %}

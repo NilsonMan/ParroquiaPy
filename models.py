@@ -31,6 +31,18 @@ class Clientes(db.Model):
     Telefono_Beneficiario2 = db.Column(db.TEXT)
     Direccion_Beneficiario2 = db.Column(db.TEXT)
 
+class Difuntos(db.Model):
+    ID_difunto = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    Nombre_completo = db.Column(db.TEXT)
+    Apellido_paterno = db.Column(db.TEXT)
+    Apellido_materno = db.Column(db.TEXT)
+    Cripta = db.Column(db.TEXT, db.ForeignKey('clientes.Cripta'))
+    Fecha_defuncion = db.Column(db.DATE)
+    Fecha = db.Column(db.DATE)
+    Fecha_Retiro = db.Column(db.DATE)
+
+    # Relación con la tabla Clientes
+    cliente = db.relationship('Clientes', backref=db.backref('difuntos', lazy=True))
 
 class Pagos(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -85,7 +97,7 @@ if __name__ == '__main__':
      # Elimina la tabla Pagos si existe
     with app.app_context():
         # Construye la sentencia DROP TABLE para Pagos
-        drop_statement = text(f"DROP TABLE IF EXISTS {Documentacion.__tablename__};")
+        drop_statement = text(f"DROP TABLE IF EXISTS {Criptas.__tablename__};")
 
         # Ejecuta la sentencia SQL
         db.session.execute(drop_statement)

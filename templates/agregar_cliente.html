@@ -110,18 +110,20 @@
             <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
             <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
             <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
-            <li><a href="{{ url_for('listar_clientes') }}">Listar Clientes</a></li>
             <li><a href="{{ url_for('verificar_documentacion')}}">Verificar documentacion</a></li>
+            <li><a href="{{ url_for('listar_clientes') }}">Listar Clientes</a></li>
             <li><a href="{{ url_for('listar_documentacion') }}">Listar Documentación</a></li>
             <li><a href="{{ url_for('listar_pagos') }}">Listar Pagos</a></li>
+            <li><a href="{{ url_for('listar_difuntos') }}">Listar Difuntos</a></li>
             <li><a href="{{ url_for('select_cripta') }}">Asignar Checklist</a></li>
             <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
             <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
             <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
+            <li><a href="{{ url_for('historico_suma_saldos') }}">Histórico de Suma de Saldos</a></li>
             {% endif %}
             <li><a href="{{ url_for('pagos_cajero') }}">Realizar cobros</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
-         </ul>
+       </ul>
         {% endblock %}
     </nav>
     {% endif %}

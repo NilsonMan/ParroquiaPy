@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Documentación</title>
+    <title>Histórico de Suma de Saldos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Editar Documentación</h1>
+        <h1>Histórico de Suma de Saldos</h1>
         <nav>
             <ul class="navbar">
                 <li><a href="{{ url_for('menu') }}">Inicio</a></li>
@@ -18,31 +18,48 @@
                 <li><a href="{{ url_for('delete_user') }}">Eliminar Usuario</a></li>
                 <li><a href="{{ url_for('configurar_pagos') }}">Configurar Pagos</a></li>
                 <li><a href="{{ url_for('filtrado_pagos') }}">Filtrar Pagos</a></li>
-                <li><a href="{{ url_for('verificar_documentacion')}}">Verificar documentacion</a></li>
                 <li><a href="{{ url_for('listar_clientes') }}">Listar Clientes</a></li>
+                <li><a href="{{ url_for('verificar_documentacion')}}">Verificar documentacion</a></li>
                 <li><a href="{{ url_for('listar_documentacion') }}">Listar Documentación</a></li>
                 <li><a href="{{ url_for('listar_pagos') }}">Listar Pagos</a></li>
-                <li><a href="{{ url_for('listar_difuntos') }}">Listar Difuntos</a></li>
                 <li><a href="{{ url_for('select_cripta') }}">Asignar Checklist</a></li>
                 <li><a href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a></li>
                 <li><a href="{{ url_for('agregar_difunto') }}">Agregar Difunto</a></li>
                 <li><a href="{{ url_for('retiro_cenizas') }}">Retiro de Cenizas</a></li>
-                <li><a href="{{ url_for('historico_suma_saldos') }}">Histórico de Suma de Saldos</a></li>
                 {% endif %}
                 <li><a href="{{ url_for('pagos_cajero') }}">Realizar cobros</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
-           </ul>
+            </ul>
         </nav>
-        <form action="{{ url_for('editar_documentacion', cripta=documentacion.Cripta, id_documentacion=documentacion.ID_documentacion) }}" method="post" enctype="multipart/form-data">
-            <label for="tipo_documento">Tipo de Documento:</label>
-            <input type="text" id="tipo_documento" name="tipo_documento" value="{{ documentacion.Tipo_documento }}" required>
-            <label for="observaciones">Observaciones:</label>
-            <input type="text" id="observaciones" name="observaciones" value="{{ documentacion.Observaciones }}" required>
-            <input type="file" id="documento" name="documento">
-            <input type="hidden" name="id_documentacion" value="{{ documentacion.ID_documentacion }}">
-            <button type="submit">Guardar Cambios</button>
-        </form>
-        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cripta</th>
+                    <th>Monto</th>
+                    <th>Motivo</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for historico in historicos %}
+                <tr>
+                    <td>{{ historico.id }}</td>
+                    <td>{{ historico.Cripta }}</td>
+                    <td>{{ historico.Monto }}</td>
+                    <td>{{ historico.Motivo }}</td>
+                    <td>{{ historico.Fecha }}</td>
+                    <td>
+                        <form action="{{ url_for('eliminar_historico', id=historico.id) }}" method="post">
+                            <button type="submit">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+       
     </div>
 </body>
 </html>

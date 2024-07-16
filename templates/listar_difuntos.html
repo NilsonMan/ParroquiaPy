@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Clientes</title>
+    <title>Lista de Difuntos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
 <body>
     <div class="container">
-        <h1>Lista de Clientes</h1>
+        <h1>Lista de Difuntos</h1>
     </div>
 
     <div class="logo-container">
@@ -42,28 +42,28 @@
        </ul>
     </nav>
 
-    <form method="POST" action="{{ url_for('listar_clientes') }}">
-        <label for="cripta">Buscar por Cripta:</label>
-        <input type="text" name="cripta" id="cripta" required>
-        <div class="form-center"><button type="submit">Buscar</button></div>
+    <form method="POST" action="{{ url_for('listar_difuntos') }}">
+        <label for="cripta_filtro">Buscar por Cripta:</label>
+        <input type="text" name="cripta_filtro" id="cripta_filtro" required>
+        <button type="submit">Buscar</button>
     </form>
 
     <table>
         <thead>
             <tr>
                 <th>Cripta</th>
-                <th>Nombre Titular</th>
+                <th>Nombre Completo</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for cliente in clientes %}
+            {% for difunto in difuntos %}
             <tr>
-                <td>{{ cliente.Cripta }}</td>
-                <td>{{ cliente.Nombre_titular }}</td>
+                <td>{{ difunto.Cripta }}</td>
+                <td>{{ difunto.Nombre_completo }}</td>
                 <td>
-                    <a href="{{ url_for('editar_cliente', cripta=cliente.Cripta) }}">Editar</a>
-                    <form action="{{ url_for('eliminar_cliente', cripta=cliente.Cripta) }}" method="post"
+                    <a href="{{ url_for('editar_difunto', id=difunto.ID_difunto) }}">Editar</a>
+                    <form action="{{ url_for('eliminar_difunto', id=difunto.ID_difunto) }}" method="post"
                         style="display:inline;">
                         <button type="submit">Eliminar</button>
                     </form>

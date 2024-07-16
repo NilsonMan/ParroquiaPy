@@ -556,6 +556,58 @@ def agregar_difunto():
     return render_template('agregar_difunto.html', difuntos=difuntos)
 
 
+@app.route('/difuntos', methods=['GET', 'POST'])
+def listar_difuntos():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    cripta_filtro = request.form.get('cripta_filtro')
+    
+    if cripta_filtro:
+        cripta_existe = Difuntos.query.filter_by(Cripta=cripta_filtro).first()
+        if cripta_existe:
+            difuntos = Difuntos.query.filter_by(Cripta=cripta_filtro).all()
+        else:
+            flash('La cripta no existe', 'error')
+            difuntos = Difuntos.query.all()
+    else:
+        difuntos = Difuntos.query.all()
+    
+    return render_template('listar_difuntos.html', difuntos=difuntos)
+
+@app.route('/editar_difunto/<int:id>', methods=['GET', 'POST'])
+def editar_difunto(id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    difunto = Difuntos.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        difunto.Nombre_completo = request.form['nombre_completo']
+        difunto.Apellido_paterno = request.form['apellido_paterno']
+        difunto.Apellido_materno = request.form['apellido_materno']
+        difunto.Cripta = request.form['cripta']
+        difunto.Fecha_defuncion = datetime.strptime(request.form['fecha_defuncion'], '%Y-%m-%d').date()
+        difunto.Fecha = datetime.strptime(request.form['fecha'], '%Y-%m-%d').date()
+        
+        db.session.commit()
+        flash('Difunto actualizado correctamente', 'success')
+        return redirect(url_for('listar_difuntos'))
+    
+    return render_template('editar_difunto.html', difunto=difunto)
+
+@app.route('/eliminar_difunto/<int:id>', methods=['POST'])
+def eliminar_difunto(id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    difunto = Difuntos.query.get_or_404(id)
+    db.session.delete(difunto)
+    db.session.commit()
+    flash('Difunto eliminado correctamente', 'success')
+    return redirect(url_for('listar_difuntos'))
+
+
 
 
 @app.route('/verificar_documentacion', methods=['GET', 'POST'])
@@ -860,6 +912,37 @@ def sumar_saldos():
         flash(f'Se ha sumado el monto a la cripta {cripta}.', 'success')
 
     return redirect(url_for('configurar_pagos'))
+
+@app.route('/historico_suma_saldos')
+@role_required('admin')
+def historico_suma_saldos():
+    historicos = HistoricoSumaSaldos.query.all()
+    return render_template('historico_suma_saldos.html', historicos=historicos)
+
+
+@app.route('/eliminar_historico/<int:id>', methods=['POST'])
+@role_required('admin')
+def eliminar_historico(id):
+    historico = HistoricoSumaSaldos.query.get_or_404(id)
+    cripta = historico.Cripta
+    monto_sumar = historico.Monto
+
+    if cripta:
+        # Ajustar el saldo de la cripta específica
+        cripta_obj = Criptas.query.filter_by(Cripta=cripta).first()
+        if cripta_obj:
+            cripta_obj.Saldo -= monto_sumar
+    else:
+        # Ajustar el saldo de todas las criptas
+        criptas = Criptas.query.all()
+        for cripta_obj in criptas:
+            cripta_obj.Saldo -= monto_sumar
+
+    db.session.delete(historico)
+    db.session.commit()
+    flash('Registro eliminado correctamente y saldo ajustado.', 'success')
+    return redirect(url_for('historico_suma_saldos'))
+
 
 @app.route('/agregar_cripta', methods=['POST'])
 def agregar_cripta():

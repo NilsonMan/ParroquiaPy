@@ -6,30 +6,20 @@
 <div class="configuracion-pagos-container"
     style="width: 80%; margin: auto; padding: 20px; border: 1px solid #dddddd3b; border-radius: 8px; background-color: #f9f9f93a; margin-top: 50px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
 
-    <div class="agregar-cripta-container"
-        style="width: 70%; margin: auto; margin-top: 50px;">
-        <h3
-            style="font-size: 1.8em; color: #333; text-align: center; margin-bottom: 20px;">Agregar
-            Cripta y Saldo</h3>
-        <form action="{{ url_for('agregar_cripta') }}" method="post"
-            style="width: 100%;">
+    <!-- Agregar Cripta y Saldo Form -->
+    <div class="agregar-cripta-container" style="width: 70%; margin: auto; margin-top: 50px;">
+        <h3 style="font-size: 1.8em; color: #333; text-align: center; margin-bottom: 20px;">Agregar Cripta y Saldo</h3>
+        <form action="{{ url_for('agregar_cripta') }}" method="post" style="width: 100%;">
             <div class="form-group" style="margin-bottom: 20px;">
-                <label for="cripta"
-                    style="display: block; margin-bottom: 5px; font-weight: bold;">Cripta:</label>
-                <input type="text" id="cripta" name="cripta" required
-                    style="width: calc(100% - 12px); padding: 8px; margin-bottom: 10px; border: 1px solid #cccccc42; border-radius: 4px; font-size: 16px;">
+                <label for="cripta" style="display: block; margin-bottom: 5px; font-weight: bold;">Cripta:</label>
+                <input type="text" id="cripta" name="cripta" required style="width: calc(100% - 12px); padding: 8px; margin-bottom: 10px; border: 1px solid #cccccc42; border-radius: 4px; font-size: 16px;">
             </div>
             <div class="form-group" style="margin-bottom: 20px;">
-                <label for="saldo"
-                    style="display: block; margin-bottom: 5px; font-weight: bold;">Saldo:</label>
-                <input type="number" step="0.01" id="saldo" name="saldo"
-                    required
-                    style="width: calc(100% - 12px); padding: 8px; margin-bottom: 10px; border: 1px solid #cccccc3d; border-radius: 4px; font-size: 16px;">
+                <label for="saldo" style="display: block; margin-bottom: 5px; font-weight: bold;">Saldo:</label>
+                <input type="number" step="0.01" id="saldo" name="saldo" required style="width: calc(100% - 12px); padding: 8px; margin-bottom: 10px; border: 1px solid #cccccc3d; border-radius: 4px; font-size: 16px;">
             </div>
             <div class="form-group">
-                <button type="submit"
-                    style="background-color: #04AA6D; color: rgba(255, 255, 255, 0.863); border: none; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; cursor: pointer; border-radius: 4px;">Agregar
-                    Cripta</button>
+                <button type="submit" style="background-color: #04AA6D; color: rgba(255, 255, 255, 0.863); border: none; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; cursor: pointer; border-radius: 4px;">Agregar Cripta</button>
             </div>
         </form>
         {% with messages = get_flashed_messages() %}
@@ -43,8 +33,7 @@
         {% endwith %}
     </div>
 
-    <!-- Agregar sección para sumar a todos los saldos -->
-    
+    <!-- Sumar a los Saldos Form -->
     <div class="sumar-saldos-container" style="width: 70%; margin: auto; margin-top: 50px;">
         <h3 style="font-size: 1.8em; color: #333; text-align: center; margin-bottom: 20px;">Sumar a los Saldos</h3>
         <form action="{{ url_for('sumar_saldos') }}" method="post" style="width: 100%;">
@@ -73,43 +62,59 @@
         </form>
     </div>
 
+    <!-- Historial de Cargos -->
     {% if historico %}
     <div class="historico-container" style="margin-top: 50px;">
         <h3 style="font-size: 1.8em; color: #333; text-align: center; margin-bottom: 20px;">Historial de Cargos</h3>
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr>
-                    <th style="border: 1px solid #cccccc3d; padding: 8px; background-color: #f2f2f25b;">Monto</th>
-                    <th style="border: 1px solid #cccccc3d; padding: 8px; background-color: #f2f2f25b;">Fecha</th>
-                    <th style="border: 1px solid #cccccc3d; padding: 8px; background-color: #f2f2f25b;">Motivo</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">ID</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Cripta</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Monto</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Motivo</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Fecha</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                {% for cargo in historico %}
+                {% for h in historico %}
                 <tr>
-                    <td style="border: 1px solid #cccccc3d; padding: 8px;">{{ cargo.monto }}</td>
-                    <td style="border: 1px solid #cccccc3d; padding: 8px;">{{ cargo.fecha }}</td>
-                    <td style="border: 1px solid #cccccc3d; padding: 8px;">{{ cargo.motivo }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ h.id }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ h.cripta }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ h.monto }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ h.motivo }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ h.fecha }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">
+                        <form action="{{ url_for('eliminar_historico') }}" method="post" style="display: inline;">
+                            <input type="hidden" name="id_historico" value="{{ h.id }}">
+                            <button type="submit" class="btn btn-danger" style="padding: 4px 8px; background-color: #dc3545; color: #fff; border: none; border-radius: 4px; cursor: pointer;">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     {% endif %}
+
 </div>
 
 <script>
-    // Mostrar u ocultar el campo de cripta específica según la selección
-    document.querySelectorAll('input[name="opcion"]').forEach(function(elem) {
-        elem.addEventListener('change', function() {
-            if (this.value === 'una') {
-                document.getElementById('cripta_especifica').style.display = 'block';
-            } else {
-                document.getElementById('cripta_especifica').style.display = 'none';
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        var opcionRadios = document.querySelectorAll('input[name="opcion"]');
+        var criptaEspecifica = document.getElementById('cripta_especifica');
+
+        opcionRadios.forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                if (this.value === 'una') {
+                    criptaEspecifica.style.display = 'block';
+                } else {
+                    criptaEspecifica.style.display = 'none';
+                }
+            });
         });
     });
 </script>
-
 
 {% endblock %}
